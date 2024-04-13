@@ -3,6 +3,9 @@ import { createContext, useEffect, useContext, useRef } from 'react'
 import { setState, getState } from 'playroomkit'
 import { randInt } from 'three/src/math/MathUtils'
 import { tileData } from '../Views/GameBoard/testboarddata'
+import { randomTileGenerator } from '../../utils'
+import { TileDataContext } from './TileDataContext'
+import { RigidBody } from '@react-three/rapier'
 // import { useControls } from 'leva'
 
 'drawTile'
@@ -15,37 +18,21 @@ const TIME_PHASE_MEEPLE_PLACE = 'Waiting for player to end place citizen phase'
 const TIME_PHASE_CALCULATE_POINTS = 10
 
 export const GameEngineProvider = ({ children }) => {
-
+    
     // Game States
     const [timer, setTimer] = useMultiplayerState('timer', 0)
     const [turnPhase, setTurnPhase] = useMultiplayerState('turnPhase', "Place Tile")
     const [turn, setTurn] = useMultiplayerState('turn', 1)
     const [playerTurn, setPlayerTurn] = useMultiplayerState('playerTurn', 0)
     const [tileDeck, setTileDeck] = useMultiplayerState('tileDeck', [])
-    const [newTileArray, setNewTileArray] = useMultiplayerState('newTileArray', [])
     const [scoreBoard, setScoreBoard] = useMultiplayerState('scoreBoard', [])
     const [newTilePosition, setNewTilePosition] = useMultiplayerState('NewTilePosition',[])
-    
-    const [otherPlayerTile,setOtherPlayerTile] = useMultiplayerState('OtherPlayerTile',[])
+   
     // const [playerTile, setPlayerTile] = useMultiplayerState('playerTile', null)
     // const [grid, setGrid] = useMultiplayerState('grid', [])
     // const [gridSpaces, setGridSpaces] = useMultiplayerState('gridSpaces', [])
 
-    const [boardGameMatrix, setBoardGameMatrix] = useMultiplayerState('boardGameMatrix', [
-        [[], [], [], [], [], [], [], [], [], [], []],
-        [[], [], [], [], [], [], [], [], [], [], []],
-        [[], [], [], [], [], [], [], [], [], [], []],
-        [[], [], [], [], [], [], [], [], [], [], []],
-        [[], [], [], [], [], [], [], [], [], [], []],
-        [[], [], [], [], [], [tileData], [], [], [], [], []],
-        [[], [], [], [], [], [], [], [], [], [], []],
-        [[], [], [], [], [], [], [], [], [], [], []],
-        [[], [], [], [], [], [], [], [], [], [], []],
-        [[], [], [], [], [], [], [], [], [], [], []],
-        [[], [], [], [], [], [], [], [], [], [], []],
-        [[], [], [], [], [], [], [], [], [], [], []],
-    ])
-
+    
     const [gameTileCount, setGameTileCount] = useMultiplayerState('gameTileCount', {
         A: 2,
         B: 4,
@@ -161,7 +148,7 @@ export const GameEngineProvider = ({ children }) => {
         let newTime = 0
         switch (turnPhase) {
             case 'start':
-
+                
                 setTurnPhase('Draw Tile', true)
                 newTime = TIME_PHASE_TILE_DRAW
                 setTimer(newTime)
@@ -246,17 +233,13 @@ export const GameEngineProvider = ({ children }) => {
         tileDeck,
         players,
         phaseEnd,
-        boardGameMatrix,
-        setBoardGameMatrix,
-        newTileArray,
-        setNewTileArray,
+    
         gameTileCount,
         scoreBoard,
         setScoreBoard,
         newTilePosition,
         setNewTilePosition,
-       otherPlayerTile,
-       setOtherPlayerTile
+     
     }
     
     return (

@@ -1,32 +1,54 @@
 import { myPlayer, RPC } from "playroomkit";
 import { Suspense, useEffect, useState, useContext } from "react";
-import { Center, OrbitControls, PresentationControls,Text } from "@react-three/drei";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import {
+  Center,
+  OrbitControls,
+  PresentationControls,
+  Text,
+} from "@react-three/drei";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+
 import { Canvas } from "@react-three/fiber";
 import { Citizen } from "../../assets/citizens/Citizen";
 import { useGameEngine } from "../../Context/useGameEngine";
 import { checkTilePlacement } from "../../Views/GameBoard/verifyFunctions.js";
 
 import CitizenControls from "../CitizenControls/CitizenControls";
+import { v4 as uuidv4 } from "uuid"; // Import uuidv4 function from the 'uuid' package
 
 // import PopUp from "../popUpRules";
+import PopUpRules from "../PopUp/popUpRules";
 import styles from "./UI.module.css";
 import TileControls from "../TileControls/TileControls";
 import { BoardGameContext } from "../../Context/BoardGameContext";
+import { TileContext } from "../../Context/TileContext.jsx";
+import { TileTypeContext } from "../../Context/TileTypeContext.jsx";
 
 export const UI = ({ drawEventHandler }) => {
-  const { newTileType, citizenPosition, showTile, setShowTile } =
-    useContext(BoardGameContext);
-
+  const { citizenPosition } = useContext(BoardGameContext);
+  const { showTile, setShowTile } = useContext(TileContext);
+  const { newTileType } = useContext(TileTypeContext);
   const [newPlayerTile, setNewPlayerTile] = useState();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-
+  const [messageIds, setMessageIds] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [loaded,setLoaded]= useState(false)
   useEffect(() => {
+    
+    
     RPC.register("chat", (data, caller) => {
-      setMessages((prevMessages) => [...prevMessages, data]);
+      if (!data.messageIds.some((msg) => {return msg === data.id})) {
+      
+        setMessageIds((curr) => {
+          return [...curr, data.id];
+        });
+        setMessages((prevMessages) => [...prevMessages, data]);
+      }
     });
+    
+  
   }, []);
 
   const { turnPhase, playerTurn, players, gameTileCount } = useGameEngine();
@@ -40,50 +62,91 @@ export const UI = ({ drawEventHandler }) => {
         const tileComp = <asset.default />;
         setNewPlayerTile(tileComp);
       });
+    } else {
+      setNewPlayerTile(
+        <Text
+          scale={[0.3, 0.3, 1]}
+          rotation={[0, 0, 0]}
+          color="white" // default
+          anchorX="center" // default
+          anchorY="middle"
+        >
+          Loading New Tile....
+        </Text>
+      );
     }
-    else{setNewPlayerTile(<Text scale={[0.3, 0.3,1 ]}
-        rotation={[0,0,0]}
-        color="white" // default
-        anchorX="center" // default
-        anchorY="middle">Loading New Tile....</Text>)}
   }, [newTileType]);
   const handleMessageChange = (e) => {
-    
     setMessage(e.target.value);
   };
   const handleKeyDown = (e) => {
-    if (e.keyCode === 13 && !e.shiftKey) { // Enter key without shift
+    if (e.keyCode === 13 && !e.shiftKey) {
+      // Enter key without shift
       e.preventDefault(); // Prevent inserting a newline character
       handleSubmit(e); // Submit the form
     }
   };
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    RPC.call("chat", {picture:me.state.profile.photo, name: me.state.profile.name , message: message }, RPC.Mode.ALL);
-    setMessage('')
-  };
+    const messageId = uuidv4();
+
+    if (message.trim() !== "") {
+      // Check if the message is not empty
+    RPC.call(
+        "chat",
+        {
+          id: messageId,
+          picture: me.state.profile.photo,
+          name: me.state.profile.name,
+          message: message,
+          messageIds:messageIds
+        },
+        RPC.Mode.ALL
+      );
+      setMessage("");
+    };
+    }
+   
 
   return (
     <div className={styles.UIWrapper}>
+      <FontAwesomeIcon
+        className={styles.info}
+        onClick={() => setIsOpen(true)}
+        icon={faCircleInfo}
+        style={{ color: "lightgray" }}
+        size="2xl"
+      />
       <div className={styles.messageArea}>
         {messages.map((msg, index) => (
           <div key={`chatmessage-${index}`} className={styles.message}>
-            <img alt="profile pricture" src={msg.picture} className={styles.profilePicture}></img>{msg.name}: {msg.message}
+            <img
+              alt="profile pricture"
+              src={msg.picture}
+              className={styles.profilePicture}
+            ></img>
+            {msg.name}: {msg.message}
           </div>
         ))}
       </div>
 
-      <form  onSubmit={handleSubmit}  onKeyDown={handleKeyDown} className={styles.inputarea}>
+      <form
+        onSubmit={handleSubmit}
+        onKeyDown={handleKeyDown}
+        className={styles.inputarea}
+      >
         <textarea
           className={styles.textarea}
           onChange={handleMessageChange}
-         value={message}
+          value={message}
           name="postContent"
           rows={4}
           cols={40}
           maxLength={200}
         />
-        <button className={styles.sendMessageButton} type="submit"><FontAwesomeIcon icon={faPaperPlane} /></button>
+        <button className={styles.sendMessageButton} type="submit">
+          <FontAwesomeIcon icon={faPaperPlane} />
+        </button>
       </form>
 
       <div className={styles.turnInfo}>
@@ -165,7 +228,8 @@ export const UI = ({ drawEventHandler }) => {
           </Canvas>
         </div>
       </Suspense>
-      {/* <PopUp/> */}
+
+      {isOpen ? <PopUpRules setIsOpen={setIsOpen} /> : null}
       {turnPhase === "Place Citizen" && player.id === me.id ? (
         <CitizenControls me={me} />
       ) : null}

@@ -24,6 +24,7 @@ Functions:
 
 export const assetInDirection = (tile, directionNum) => {
     // convert the orientation into a number from 0-3
+   
     const turn = tile.orientation/90
     // orientation minused to get asset direction
    
@@ -75,6 +76,7 @@ export const checkSide = (tile, directionNum, matrix) => {
     // get coordinates for the tile on that side
     const sideTileCoords = adjacentTileCoords(tile, directionNum)
     // check tile is not off the grid
+   
     if (sideTileCoords.row < 0 ||
         sideTileCoords.row > 10 ||
         sideTileCoords.column < 0 ||
@@ -89,7 +91,7 @@ export const checkSide = (tile, directionNum, matrix) => {
     else {sideTile = sideTile[0]}
     // get asset of tile
     const tileAsset = assetInDirection(tile, directionNum)
-
+       
     // get corresponding asset of side tile
     const sideDirectionNum = (directionNum + 2) % 4
     const sideTileAsset = assetInDirection(sideTile, sideDirectionNum)
@@ -100,6 +102,7 @@ export const checkSide = (tile, directionNum, matrix) => {
 
 
 export const checkTilePlacement = (tile, matrix) => {
+   
     for (let i=0; i<=3; i++) {
         if (!checkSide(tile, i, matrix)) {
             return false

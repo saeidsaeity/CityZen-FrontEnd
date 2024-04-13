@@ -3,8 +3,12 @@ import { tileChecks, tileColourLogic } from "../../../utils.js";
 import { useGameEngine } from "../../Context/useGameEngine.jsx";
 import { useContext } from "react";
 import { BoardGameContext } from "../../Context/BoardGameContext.jsx";
-import { myPlayer } from "playroomkit";
+import { myPlayer,RPC } from "playroomkit";
 import useSound from "use-sound";
+import { TileContext } from "../../Context/TileContext.jsx";
+import { TileMeshContext } from "../../Context/TileMeshContext.jsx";
+import { TileDataContext } from "../../Context/TileDataContext.jsx";
+import { BoardGameMatrixContext } from "../../Context/BoardGameMatrixContext.jsx";
 export const GameBoardCells = ({ newTilePosition }) => {
   const [sound] = useSound("drop.wav");
   const [falling]= useSound('falling.mp3')
@@ -13,18 +17,20 @@ export const GameBoardCells = ({ newTilePosition }) => {
   const {
     setReleaseTile,
     setNewTile2DPosition,
-    setNewTileData,
-    newTileMesh,
-    setNewTileMesh,
-  } = useContext(BoardGameContext);
+  
+  } = useContext(TileContext);
+  const {setNewTileData}= useContext(TileDataContext)
+  const {newTileMesh,setNewTileMesh}=useContext(TileMeshContext)
   const {
     setNewTilePosition,
-    boardGameMatrix,
+
     turnPhase,
     isCitizenPhase,
     players,
     playerTurn,
   } = useGameEngine();
+  const {boardGameMatrix}=useContext(BoardGameMatrixContext)
+
   const player = players[playerTurn];
   const me = myPlayer();
   const grid = [];
@@ -75,6 +81,7 @@ export const GameBoardCells = ({ newTilePosition }) => {
                       }, 900);
                       return newtilepos;
                     });
+                    RPC.call("enemyTile",newTileMesh,RPC.Mode.ALL)
                   }
                 } else if (
                   // selected a green tile
@@ -110,6 +117,7 @@ export const GameBoardCells = ({ newTilePosition }) => {
                     }, 1000);
                     return newtilepos;
                   });
+                  RPC.call("enemyTile",newTileMesh,RPC.Mode.ALL)
                 }
               }
             } else {

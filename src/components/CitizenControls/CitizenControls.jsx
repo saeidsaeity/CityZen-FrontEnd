@@ -4,18 +4,24 @@ import styles from "./CitizenControls.module.css";
 import { useGameEngine } from "../../Context/useGameEngine";
 import { checkTileCompletes } from "../../Views/GameBoard/verifyFunctions";
 import { BoardGameContext } from "../../Context/BoardGameContext";
-import { myPlayer } from 'playroomkit';
+import { myPlayer,RPC } from 'playroomkit';
 import useSound from 'use-sound';
+import { TileContext } from "../../Context/TileContext";
+import { TileRotationContext } from "../../Context/TileRotationContext";
+import { TileDataContext } from "../../Context/TileDataContext";
+import { TileTypeContext } from "../../Context/TileTypeContext";
+import { BoardGameMatrixContext } from "../../Context/BoardGameMatrixContext";
 function CitizenControls() {
-  const {newTileData,
+  const {
     citizenPosition, // maybe a context?
     setCitizenPosition,
-    tileRotation,
-    setNewTileData,
     setShowCitizen,
-    setCitizenArray,
-    setTileRotation}= useContext(BoardGameContext)
+    setCitizenArray,setReleaseCitizen}= useContext(BoardGameContext)
 
+    const {newTileData,
+      setNewTileData}=useContext(TileDataContext)
+
+     const {tileRotation,setTileRotation} =  useContext(TileRotationContext)
     const [sound] = useSound("drop.wav");
     const [falling]= useSound('falling.mp3')
     const [playSound] = useSound('confirm.mp3');
@@ -42,9 +48,9 @@ function CitizenControls() {
     }
   }, [newTileData]);
 
-  const { playerTurn, players, phaseEnd, boardGameMatrix, setBoardGameMatrix } =
+  const { playerTurn, players, phaseEnd} =
     useGameEngine();
-
+  const {boardGameMatrix, setBoardGameMatrix }=useContext(BoardGameMatrixContext)
   const me = myPlayer();
 
   const confirmCitizenHandler = () => {
@@ -58,11 +64,11 @@ function CitizenControls() {
         changeTileData.citizen.player = playerTurn;
         changeTileData.citizen.colour = me.state.profile.color;
         changeTileData.citizen.position = citizenControlledPosition;
-        const newerBoard = JSON.parse(JSON.stringify(boardGameMatrix));
+        setBoardGameMatrix((currMatrix)=>{
+          const newerBoard = JSON.parse(JSON.stringify(currMatrix));
         newerBoard[newTileData.grid_id.row][newTileData.grid_id.column] = [
           changeTileData,
         ];
-        setBoardGameMatrix(newerBoard);
         const scoreObj = checkTileCompletes(changeTileData, newerBoard);
         for (let i = 0; i < players.length; i++) {
           if (scoreObj[i]) {
@@ -70,10 +76,16 @@ function CitizenControls() {
             players[i].setState('score', playerScore + scoreObj[i], true);
           }
         }
+        RPC.call('confirmCitizen',newerBoard,RPC.Mode.OTHERS)
+        return newerBoard
+        })
+        
+        
+       
         return changeTileData;
       });
+      RPC.call("citizen", {colour:me.state.profile.color,position:citizenControlledPosition}, RPC.Mode.ALL);
       setTileRotation(0);
-      setCitizenArray([]);
       setShowCitizen(false);
       playSound()
       phaseEnd();
