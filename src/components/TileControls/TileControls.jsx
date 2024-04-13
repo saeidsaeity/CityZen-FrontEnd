@@ -63,6 +63,7 @@ setRenderTileArr}= useContext(TileContext)
           rotation: [0, tileRotation - Math.PI / 2, 0],
         },
       };
+      RPC.call("enemyTile",  updatedTile , RPC.Mode.ALL);
       return updatedTile;
     });
   };

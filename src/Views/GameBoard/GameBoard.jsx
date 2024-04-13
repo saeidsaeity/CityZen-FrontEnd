@@ -59,7 +59,7 @@ const GameBoard = () => {
   const { tileRotation } = useContext(TileRotationContext);
   const { setNewTileData, newTileData } = useContext(TileDataContext);
   const { setBoardGameMatrix } = useContext(BoardGameMatrixContext);
-  const {setNewTileType}= useContext(TileTypeContext)
+  const { setNewTileType } = useContext(TileTypeContext);
   // STATES //
   // CAMERA & ENVIRONMENT
   const {
@@ -70,7 +70,7 @@ const GameBoard = () => {
     playerTurn,
   } = useGameEngine();
 
-   const drawEventHandler = async (tileType) => {
+  const drawEventHandler = async (tileType) => {
     const TileComponent = await import(
       `../../assets/tiles/tile${tileType}.jsx`
     );
@@ -140,12 +140,7 @@ const GameBoard = () => {
 
   const me = myPlayer();
   useEffect(() => {
-     
-    
-          
-   
     RPC.register("tile", (data, caller) => {
-    
       const splitkey = data.key.split("");
 
       getRenderTileMesh(
@@ -164,6 +159,7 @@ const GameBoard = () => {
           return [...currArray, tileMesh];
         });
       });
+      setRenderEnemyTile(null);
       console.log(renderTileArr);
     });
 
@@ -171,7 +167,6 @@ const GameBoard = () => {
       console.log(data);
       renderCitizen(data.position, data.colour).then((newcitizen) => {
         setCitizenArray((currArray) => {
-          
           currArray.some((citizen) => {
             {
               return (
@@ -206,7 +201,6 @@ const GameBoard = () => {
     setShowCitizen(false);
 
     RPC.register("confirmMatrix", (data, caller) => {
-
       setBoardGameMatrix((currBoard) => {
         const newerBoard = JSON.parse(JSON.stringify(currBoard));
         newerBoard[data.pos1][data.pos2] = [newTileData];
@@ -219,25 +213,21 @@ const GameBoard = () => {
     });
 
     RPC.register("enemyTile", (data, caller) => {
-     
-     
+      console.log(data);
+      console.log(data.pos);
+      console.log(data.newTileMesh);
       const TileTypeEnemy = data.key.split("");
-      setOtherPlayerTile([
-        TileTypeEnemy[0],
-        data.props.position,
-        -data.props.rotation[1],
-      ]);
       getRenderTileMesh(
         TileTypeEnemy[0],
-        newTilePosition,
+        data.props.position,
         -data.props.rotation[1]
       ).then((outputtile) => {
-       
+        console.log(outputtile);
         setRenderEnemyTile(outputtile);
       });
     });
   }, []);
-
+  console.log(renderEnemyTile);
   const player = players[playerTurn];
   // console.log(otherPlayerTile);
   // console.log(newTileMesh);
@@ -248,7 +238,8 @@ const GameBoard = () => {
   // console.log(releaseTile)
   //   console.log(replaceTile);
   console.log("here");
- 
+  console.log(newTilePosition);
+
   return (
     <>
       <UI drawEventHandler={drawEventHandler} />
@@ -309,7 +300,7 @@ const GameBoard = () => {
 
               {releaseTile && replaceTile ? newTileMesh : null}
 
-              {me.id !== player.id && otherPlayerTile && turnPhase === "Place Citizen"? renderEnemyTile : null}
+              {me.id !== player.id ? renderEnemyTile : null}
               {turnPhase === "Place Citizen" &&
               citizenPosition.length > 0 &&
               showCitizen &&

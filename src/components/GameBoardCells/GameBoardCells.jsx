@@ -81,7 +81,9 @@ export const GameBoardCells = ({ newTilePosition }) => {
                       }, 900);
                       return newtilepos;
                     });
-                    RPC.call("enemyTile",newTileMesh,RPC.Mode.ALL)
+                    console.log(newTileMesh);
+                  
+                   
                   }
                 } else if (
                   // selected a green tile
@@ -117,7 +119,8 @@ export const GameBoardCells = ({ newTilePosition }) => {
                     }, 1000);
                     return newtilepos;
                   });
-                  RPC.call("enemyTile",newTileMesh,RPC.Mode.ALL)
+                  
+                    
                 }
               }
             } else {
