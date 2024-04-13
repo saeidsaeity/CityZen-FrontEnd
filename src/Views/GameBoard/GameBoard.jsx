@@ -60,6 +60,7 @@ const GameBoard = () => {
   const { setNewTileData, newTileData } = useContext(TileDataContext);
   const { setBoardGameMatrix } = useContext(BoardGameMatrixContext);
   const { setNewTileType } = useContext(TileTypeContext);
+  const[tempCitizen,setTempCitizen]=useState([])
   // STATES //
   // CAMERA & ENVIRONMENT
   const {
@@ -196,6 +197,7 @@ const GameBoard = () => {
         });
         setReleaseCitizen(false);
       });
+      setTempCitizen(null)
     });
 
     setShowCitizen(false);
@@ -227,6 +229,12 @@ const GameBoard = () => {
       });
     });
   }, []);
+  RPC.register("showCitizen",(data,caller)=>{
+
+    renderCitizen(data.position,data.colour).then((citiz)=>
+    setTempCitizen(citiz)
+    )
+  })
   console.log(renderEnemyTile);
   const player = players[playerTurn];
   // console.log(otherPlayerTile);
@@ -299,7 +307,7 @@ const GameBoard = () => {
               <GameBoardCells />
 
               {releaseTile && replaceTile ? newTileMesh : null}
-
+              {me.id !== player.id ? tempCitizen : null}
               {me.id !== player.id ? renderEnemyTile : null}
               {turnPhase === "Place Citizen" &&
               citizenPosition.length > 0 &&

@@ -11,7 +11,9 @@ import { TileRotationContext } from "../../Context/TileRotationContext";
 import { TileDataContext } from "../../Context/TileDataContext";
 import { TileTypeContext } from "../../Context/TileTypeContext";
 import { BoardGameMatrixContext } from "../../Context/BoardGameMatrixContext";
+
 function CitizenControls() {
+  
   const {
     citizenPosition, // maybe a context?
     setCitizenPosition,
@@ -130,6 +132,7 @@ function CitizenControls() {
     }
     setCitizenPosition([xCoord * 2, 4, yCoord * 2]);
     setCitizenControlledPosition([xCoord * 2, 4, yCoord * 2]);
+    RPC.call("showCitizen",{position:[xCoord * 2, 4, yCoord * 2],colour:me.state.profile.color},RPC.Mode.ALL)
   };
 
   return (
