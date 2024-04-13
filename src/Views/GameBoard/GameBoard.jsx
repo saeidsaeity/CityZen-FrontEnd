@@ -49,8 +49,9 @@ const GameBoard = () => {
     setReleaseTile,
     renderTileArr,
     setRenderTileArr,
-
+    setShowTile,
     replaceTile,
+    setReplaceTile
   } = useContext(TileContext);
   const { renderEnemyTile, setRenderEnemyTile } = useContext(
     RenderEnemyTileContext
@@ -228,14 +229,31 @@ const GameBoard = () => {
         setRenderEnemyTile(outputtile);
       });
     });
-  }, []);
-  RPC.register("showCitizen",(data,caller)=>{
+    RPC.register("showCitizen",(data,caller)=>{
 
-    renderCitizen(data.position,data.colour).then((citiz)=>
-    setTempCitizen(citiz)
-    )
-  })
-  console.log(renderEnemyTile);
+      renderCitizen(data.position,data.colour).then((citiz)=>
+      setTempCitizen(citiz)
+      )
+    })
+    RPC.register("initialTile",(data,caller)=>{
+      if (me.id === player.id) {
+      setReleaseTile(false);
+          setShowTile(false);
+          randomTileGenerator(74).then((randomTile)=>{
+
+            setNewTileData(randomTile);
+            drawEventHandler(randomTile.tile_type);
+             // RPC.call('enemyTile',tileOutput,RPC.Mode.ALL)
+             setNewTileType(randomTile.tile_type);
+             setShowTile(true);
+             setReplaceTile(true);
+          })
+          
+        }
+    })
+  }, []);
+  
+  //console.log(renderEnemyTile);
   const player = players[playerTurn];
   // console.log(otherPlayerTile);
   // console.log(newTileMesh);
@@ -247,6 +265,11 @@ const GameBoard = () => {
   //   console.log(replaceTile);
   console.log("here");
   console.log(newTilePosition);
+  useEffect(()=>{
+   
+      RPC.call("initialTile", {}, RPC.Mode.ALL);
+    
+  },[playerTurn])
 
   return (
     <>

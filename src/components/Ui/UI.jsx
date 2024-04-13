@@ -212,7 +212,7 @@ export const UI = ({ drawEventHandler }) => {
               azimuth={[-Infinity, Infinity]} // Horizontal limits
               config={{ mass: 1, tension: 170, friction: 26 }} // Spring config
             >
-              {turnPhase === "Place Citizen" ? (
+              {turnPhase === "Place Citizen" && player.id === me.id ? (
                 <Center>
                   <Citizen
                     scale={0.25}
@@ -221,9 +221,8 @@ export const UI = ({ drawEventHandler }) => {
                     citizenPosition={citizenPosition}
                   />
                 </Center>
-              ) : (
-                newPlayerTile
-              )}
+              ) : null }
+              {turnPhase === "Place Tile" && player.id === me.id ? newPlayerTile : null}
             </PresentationControls>
           </Canvas>
         </div>
