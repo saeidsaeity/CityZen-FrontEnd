@@ -3,7 +3,7 @@ import { tileChecks, tileColourLogic } from "../../../utils.js";
 import { useGameEngine } from "../../Context/useGameEngine.jsx";
 import { useContext } from "react";
 import { BoardGameContext } from "../../Context/BoardGameContext.jsx";
-import { myPlayer,RPC } from "playroomkit";
+import { myPlayer, RPC } from "playroomkit";
 import useSound from "use-sound";
 import { TileContext } from "../../Context/TileContext.jsx";
 import { TileMeshContext } from "../../Context/TileMeshContext.jsx";
@@ -11,19 +11,16 @@ import { TileDataContext } from "../../Context/TileDataContext.jsx";
 import { BoardGameMatrixContext } from "../../Context/BoardGameMatrixContext.jsx";
 import { checkTilePlacement } from "../../Views/GameBoard/verifyFunctions.js";
 import { ColourContext } from "../../Context/ColourContext.jsx";
+
 export const GameBoardCells = ({ newTilePosition }) => {
   const [sound] = useSound("drop.wav");
-  const [falling]= useSound('falling.mp3')
+  const [falling] = useSound("falling.mp3");
   const tileScale = [0.92, 0.92, 0.92];
   const tileSize = 2;
-  const {
-    setReleaseTile,
-    setNewTile2DPosition,
-  
-  } = useContext(TileContext);
-  const {setNewTileData,newTileData}= useContext(TileDataContext)
-  const {newTileMesh,setNewTileMesh}=useContext(TileMeshContext)
-  const {beamColour,setBeamColour} = useContext(ColourContext)
+  const { setReleaseTile, setNewTile2DPosition } = useContext(TileContext);
+  const { setNewTileData, newTileData } = useContext(TileDataContext);
+  const { newTileMesh, setNewTileMesh } = useContext(TileMeshContext);
+  const { beamColour, setBeamColour } = useContext(ColourContext);
   const {
     setNewTilePosition,
 
@@ -32,7 +29,7 @@ export const GameBoardCells = ({ newTilePosition }) => {
     players,
     playerTurn,
   } = useGameEngine();
-  const {boardGameMatrix}=useContext(BoardGameMatrixContext)
+  const { boardGameMatrix } = useContext(BoardGameMatrixContext);
 
   const player = players[playerTurn];
   const me = myPlayer();
@@ -42,25 +39,86 @@ export const GameBoardCells = ({ newTilePosition }) => {
       // Create the tile
       const position = new THREE.Vector3(i, 0, j);
       const tile = (
-        <mesh
-          key={`${i}-${j}-tile`}
-          onClick={() => {
-            if (newTileMesh) {
-              if (me.id === player.id) {
-                if (turnPhase !== "Place Tile") {
-                  console.log("You can not place during the citizen phase!");
-                  return [];
-                }
-                if (i === -5 || j === -5) {
-                  // board edge case
-                  if (
+       
+          <mesh
+            key={`${i}-${j}-tile`}
+            onClick={() => {
+              if (newTileMesh) {
+                if (me.id === player.id) {
+                  if (turnPhase !== "Place Tile") {
+                    console.log("You can not place during the citizen phase!");
+                    return [];
+                  }
+                  if (i === -5 || j === -5) {
+                    // board edge case
+                    if (
+                      boardGameMatrix[i + 5][j + 5]?.length === 0 &&
+                      (boardGameMatrix[i + 6][j + 5]?.length > 0 ||
+                        boardGameMatrix[i + 5][j + 6]?.length > 0 ||
+                        boardGameMatrix[i + 5][j + 4]?.length > 0)
+                    ) {
+                      falling();
+
+                      tileChecks(
+                        position.x,
+                        position.z,
+                        i,
+                        j,
+                        setReleaseTile,
+                        setNewTilePosition,
+                        setNewTile2DPosition,
+                        tileSize,
+                        newTileMesh,
+                        setNewTileMesh
+                      );
+                      setNewTileData((currTileData) => {
+                        const newtilepos = { ...currTileData };
+                        newtilepos.grid_id = {
+                          row: position.x,
+                          column: position.z,
+                        };
+                        if (checkTilePlacement(newtilepos, boardGameMatrix)) {
+                          setBeamColour("green");
+                        } else if (
+                          checkTilePlacement(
+                            { ...newtilepos, orientation: 0 },
+                            boardGameMatrix
+                          ) ||
+                          checkTilePlacement(
+                            { ...newtilepos, orientation: 90 },
+                            boardGameMatrix
+                          ) ||
+                          checkTilePlacement(
+                            { ...newtilepos, orientation: 180 },
+                            boardGameMatrix
+                          ) ||
+                          checkTilePlacement(
+                            { ...newtilepos, orientation: 270 },
+                            boardGameMatrix
+                          )
+                        ) {
+                          setBeamColour("orange");
+                        } else {
+                          setBeamColour("red");
+                        }
+                        return newtilepos;
+                      });
+                      console.log(newTileMesh);
+                      setTimeout(function () {
+                        sound();
+                      }, 900);
+                    }
+                  } else if (
+                    // selected a green tile
                     boardGameMatrix[i + 5][j + 5]?.length === 0 &&
-                    (boardGameMatrix[i + 6][j + 5]?.length > 0 ||
-                      boardGameMatrix[i + 5][j + 6]?.length > 0 ||
-                      boardGameMatrix[i + 5][j + 4]?.length > 0)
+                    (boardGameMatrix[i + 4][j + 5]?.length > 0 ||
+                      boardGameMatrix[i + 5][j + 4]?.length > 0 ||
+                      boardGameMatrix[i + 6][j + 5]?.length > 0 ||
+                      boardGameMatrix[i + 5][j + 6]?.length > 0)
                   ) {
-                    falling()
-                  
+                    falling();
+                    //setReleaseTile(!releaseTile);
+
                     tileChecks(
                       position.x,
                       position.z,
@@ -76,91 +134,58 @@ export const GameBoardCells = ({ newTilePosition }) => {
                     setNewTileData((currTileData) => {
                       const newtilepos = { ...currTileData };
                       newtilepos.grid_id = {
-                        row: position.x,
-                        column: position.z,
+                        row: position.x + 5,
+                        column: position.z + 5,
                       };
                       if (checkTilePlacement(newtilepos, boardGameMatrix)) {
-                        setBeamColour('green')
+                        setBeamColour("green");
+                      } else if (
+                        checkTilePlacement(
+                          { ...newtilepos, orientation: 0 },
+                          boardGameMatrix
+                        ) ||
+                        checkTilePlacement(
+                          { ...newtilepos, orientation: 90 },
+                          boardGameMatrix
+                        ) ||
+                        checkTilePlacement(
+                          { ...newtilepos, orientation: 180 },
+                          boardGameMatrix
+                        ) ||
+                        checkTilePlacement(
+                          { ...newtilepos, orientation: 270 },
+                          boardGameMatrix
+                        )
+                      ) {
+                        setBeamColour("orange");
+                      } else {
+                        setBeamColour("red");
                       }
-                      else if(checkTilePlacement({...newtilepos,orientation:0}, boardGameMatrix)||checkTilePlacement({...newtilepos,orientation:90}, boardGameMatrix)|| checkTilePlacement({...newtilepos,orientation:180}, boardGameMatrix)|| checkTilePlacement({...newtilepos,orientation:270}, boardGameMatrix)){
-                        setBeamColour('orange')
-                      }
-                      else{
-                        setBeamColour('red')
-                      }
+
                       return newtilepos;
                     });
-                    console.log(newTileMesh);
                     setTimeout(function () {
                       sound();
-                    }, 900);
-                  
-                   
+                    }, 1000);
                   }
-              
-                } else if (
-                  // selected a green tile
-                  boardGameMatrix[i + 5][j + 5]?.length === 0 &&
-                  (boardGameMatrix[i + 4][j + 5]?.length > 0 ||
-                    boardGameMatrix[i + 5][j + 4]?.length > 0 ||
-                    boardGameMatrix[i + 6][j + 5]?.length > 0 ||
-                    boardGameMatrix[i + 5][j + 6]?.length > 0)
-                ) {
-                  falling()
-                  //setReleaseTile(!releaseTile);
-                
-                  
-                  tileChecks(
-                    position.x,
-                    position.z,
-                    i,
-                    j,
-                    setReleaseTile,
-                    setNewTilePosition,
-                    setNewTile2DPosition,
-                    tileSize,
-                    newTileMesh,
-                    setNewTileMesh
-                  );
-                  setNewTileData((currTileData) => {
-                    const newtilepos = { ...currTileData };
-                    newtilepos.grid_id = {
-                      row: position.x + 5,
-                      column: position.z + 5,
-                    };
-                    if (checkTilePlacement(newtilepos, boardGameMatrix)) {
-                      setBeamColour('green')
-                    }
-                    else if(checkTilePlacement({...newtilepos,orientation:0}, boardGameMatrix)||checkTilePlacement({...newtilepos,orientation:90}, boardGameMatrix)|| checkTilePlacement({...newtilepos,orientation:180}, boardGameMatrix)|| checkTilePlacement({...newtilepos,orientation:270}, boardGameMatrix)){
-                      setBeamColour('orange')
-                    }
-                    else{
-                      setBeamColour('red')
-                    }
-                   
-                    return newtilepos;
-                  });
-                  setTimeout(function () {
-                    sound();
-                  }, 1000);
-                    
                 }
+              } else {
+                console.log("please draw a tile");
               }
-            } else {
-              console.log("please draw a tile");
-            }
-          }}
-          position={[i * tileSize, 0, j * tileSize]}
-          scale={tileScale}
-        >
-          <boxGeometry args={[tileSize, 0.1, tileSize]} />
-          <meshPhongMaterial
-            color={tileColourLogic(i, j, boardGameMatrix, isCitizenPhase)}
-            transparent={true}
-            opacity={0.2}
-            receiveShadow
-          />
-        </mesh>
+            }}
+            position={[i * tileSize, 0.1, j * tileSize]}
+            scale={tileScale}
+          >
+            <boxGeometry args={[tileSize, 0.01, tileSize]} />
+            <meshPhongMaterial
+              color={tileColourLogic(i, j, boardGameMatrix, isCitizenPhase)}
+              transparent={true}
+              opacity={0.5}
+              receiveShadow
+            />
+          </mesh>
+         
+        
       );
       grid.push(tile);
     }

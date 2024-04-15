@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 
-export function Model(props) {
+export default function Mountain(props) {
   const { nodes, materials } = useGLTF('/mountain_low_poly_for_distant_mountains.glb')
   return (
     <group {...props} dispose={null}>
