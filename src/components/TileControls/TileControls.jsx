@@ -15,6 +15,7 @@ import { tileData } from "../../Views/GameBoard/testboarddata.js";
 import { TileDataContext } from "../../Context/TileDataContext.jsx";
 import { TileTypeContext } from "../../Context/TileTypeContext.jsx";
 import { BoardGameMatrixContext } from "../../Context/BoardGameMatrixContext.jsx";
+import { ColourContext } from "../../Context/ColourContext.jsx";
 function TileControls({ drawEventHandler }) {
  const {
     setReleaseTile,
@@ -29,6 +30,7 @@ setRenderTileArr}= useContext(TileContext)
     const {setTileRotation,tileRotation} = useContext(TileRotationContext)
     const {newTileMesh,setNewTileMesh}=useContext(TileMeshContext)
     const {setNewTileType}= useContext(TileTypeContext)
+    const {setBeamColour}=useContext(ColourContext)
     const tileScale = [0.92, 0.92, 0.92];
   const tileSize = 2;
   const {
@@ -36,7 +38,7 @@ setRenderTileArr}= useContext(TileContext)
     players,
     phaseEnd,
     gameTileCount,
-   
+    setNewTilePosition
   } = useGameEngine();
   const { boardGameMatrix,
     setBoardGameMatrix}= useContext(BoardGameMatrixContext)
@@ -50,8 +52,25 @@ setRenderTileArr}= useContext(TileContext)
       }
       return currRotation - Math.PI / 2;
     });
-    newTileData.orientation =
+    setNewTileData((currTileData)=>{
+      const newrotationtile = {...currTileData}
+      newrotationtile.orientation =
       ((tileRotation - Math.PI / 2) * -1 * (180 / Math.PI)) % 360;
+      console.log(newrotationtile);
+      if (checkTilePlacement(newrotationtile, boardGameMatrix)) {
+        setBeamColour('green')
+      }
+      else if(checkTilePlacement({...currTileData,orientation:0}, boardGameMatrix)||checkTilePlacement({...currTileData,orientation:90}, boardGameMatrix)|| checkTilePlacement({...currTileData,orientation:180}, boardGameMatrix)|| checkTilePlacement({...currTileData,orientation:270}, boardGameMatrix)){
+        setBeamColour('orange')
+      }
+      else{
+        setBeamColour('red')
+      }
+      return newrotationtile
+
+    })
+    // newTileData.orientation =
+    //   ((tileRotation - Math.PI / 2) * -1 * (180 / Math.PI)) % 360;
     setNewTileMesh((currTile) => {
       if (currTile === undefined) {
         return currTile;
@@ -80,6 +99,7 @@ setRenderTileArr}= useContext(TileContext)
    
       setNewTileMesh(null);
       setReleaseTile(false);
+      setNewTilePosition(null)
       playSound();
       phaseEnd();
     } else {

@@ -12,11 +12,13 @@ import { TileTypeProvider } from './Context/TileTypeContext.jsx'
 import { StrictMode } from 'react';
 import { BoardGameMatrixProvider } from './Context/BoardGameMatrixContext.jsx'
 import { RenderEnemyTileProvider } from './Context/RenderEnemyTileContext.jsx'
+import { ColourProvider } from './Context/ColourContext.jsx'
 
 const container = document.getElementById('root');
 
 const root = createRoot(container);
   root.render(
+    <ColourProvider>
     <RenderEnemyTileProvider>
     <BoardGameMatrixProvider>
     <TileTypeProvider>
@@ -38,5 +40,6 @@ const root = createRoot(container);
     </TileTypeProvider>
     </BoardGameMatrixProvider>
     </RenderEnemyTileProvider>
+    </ColourProvider>
   )
 

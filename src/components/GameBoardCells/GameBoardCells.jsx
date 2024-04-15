@@ -9,6 +9,8 @@ import { TileContext } from "../../Context/TileContext.jsx";
 import { TileMeshContext } from "../../Context/TileMeshContext.jsx";
 import { TileDataContext } from "../../Context/TileDataContext.jsx";
 import { BoardGameMatrixContext } from "../../Context/BoardGameMatrixContext.jsx";
+import { checkTilePlacement } from "../../Views/GameBoard/verifyFunctions.js";
+import { ColourContext } from "../../Context/ColourContext.jsx";
 export const GameBoardCells = ({ newTilePosition }) => {
   const [sound] = useSound("drop.wav");
   const [falling]= useSound('falling.mp3')
@@ -19,8 +21,9 @@ export const GameBoardCells = ({ newTilePosition }) => {
     setNewTile2DPosition,
   
   } = useContext(TileContext);
-  const {setNewTileData}= useContext(TileDataContext)
+  const {setNewTileData,newTileData}= useContext(TileDataContext)
   const {newTileMesh,setNewTileMesh}=useContext(TileMeshContext)
+  const {beamColour,setBeamColour} = useContext(ColourContext)
   const {
     setNewTilePosition,
 
@@ -57,6 +60,7 @@ export const GameBoardCells = ({ newTilePosition }) => {
                       boardGameMatrix[i + 5][j + 4]?.length > 0)
                   ) {
                     falling()
+                  
                     tileChecks(
                       position.x,
                       position.z,
@@ -75,16 +79,25 @@ export const GameBoardCells = ({ newTilePosition }) => {
                         row: position.x,
                         column: position.z,
                       };
-                      
-                      setTimeout(function () {
-                        sound();
-                      }, 900);
+                      if (checkTilePlacement(newtilepos, boardGameMatrix)) {
+                        setBeamColour('green')
+                      }
+                      else if(checkTilePlacement({...newtilepos,orientation:0}, boardGameMatrix)||checkTilePlacement({...newtilepos,orientation:90}, boardGameMatrix)|| checkTilePlacement({...newtilepos,orientation:180}, boardGameMatrix)|| checkTilePlacement({...newtilepos,orientation:270}, boardGameMatrix)){
+                        setBeamColour('orange')
+                      }
+                      else{
+                        setBeamColour('red')
+                      }
                       return newtilepos;
                     });
                     console.log(newTileMesh);
+                    setTimeout(function () {
+                      sound();
+                    }, 900);
                   
                    
                   }
+              
                 } else if (
                   // selected a green tile
                   boardGameMatrix[i + 5][j + 5]?.length === 0 &&
@@ -95,6 +108,8 @@ export const GameBoardCells = ({ newTilePosition }) => {
                 ) {
                   falling()
                   //setReleaseTile(!releaseTile);
+                
+                  
                   tileChecks(
                     position.x,
                     position.z,
@@ -113,13 +128,21 @@ export const GameBoardCells = ({ newTilePosition }) => {
                       row: position.x + 5,
                       column: position.z + 5,
                     };
-                    
-                    setTimeout(function () {
-                      sound();
-                    }, 1000);
+                    if (checkTilePlacement(newtilepos, boardGameMatrix)) {
+                      setBeamColour('green')
+                    }
+                    else if(checkTilePlacement({...newtilepos,orientation:0}, boardGameMatrix)||checkTilePlacement({...newtilepos,orientation:90}, boardGameMatrix)|| checkTilePlacement({...newtilepos,orientation:180}, boardGameMatrix)|| checkTilePlacement({...newtilepos,orientation:270}, boardGameMatrix)){
+                      setBeamColour('orange')
+                    }
+                    else{
+                      setBeamColour('red')
+                    }
+                   
                     return newtilepos;
                   });
-                  
+                  setTimeout(function () {
+                    sound();
+                  }, 1000);
                     
                 }
               }

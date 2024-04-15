@@ -25,6 +25,7 @@ import { BoardGameMatrixContext } from "../../Context/BoardGameMatrixContext.jsx
 import { RenderEnemyTileContext } from "../../Context/RenderEnemyTileContext.jsx";
 import { randomTileGenerator } from "../../../utils.js";
 import { TileTypeContext } from "../../Context/TileTypeContext.jsx";
+import { ColourContext } from "../../Context/ColourContext.jsx";
 
 const GameBoard = () => {
   // TILE
@@ -61,13 +62,14 @@ const GameBoard = () => {
   const { setNewTileData, newTileData } = useContext(TileDataContext);
   const { setBoardGameMatrix } = useContext(BoardGameMatrixContext);
   const { setNewTileType } = useContext(TileTypeContext);
+  const {beamColour,setBeamColour} = useContext(ColourContext)
   const[tempCitizen,setTempCitizen]=useState([])
   // STATES //
   // CAMERA & ENVIRONMENT
   const {
     turnPhase,
     newTilePosition,
-
+    
     players,
     playerTurn,
   } = useGameEngine();
@@ -266,10 +268,10 @@ const GameBoard = () => {
   console.log("here");
   console.log(newTilePosition);
   useEffect(()=>{
-   
+      if(turnPhase === 'Place Tile' && me.id === player.id )
       RPC.call("initialTile", {}, RPC.Mode.ALL);
     
-  },[playerTurn])
+  },[turnPhase])
 
   return (
     <>
@@ -364,7 +366,7 @@ const GameBoard = () => {
             {newTilePosition && turnPhase === "Place Tile" ? (
               <mesh position={newTilePosition}>
                 <boxGeometry args={[2, 10, 2]} />
-                <meshBasicMaterial color="yellow" transparent opacity={0.3} />
+                <meshBasicMaterial color={beamColour} transparent opacity={0.3} />
               </mesh>
             ) : null}
 

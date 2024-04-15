@@ -6,19 +6,11 @@ export const randomTileGenerator = async (gameTileCount) => {
   const randInt = Math.floor(Math.random() * 23 + 1);
   const tileType = String.fromCharCode(randInt + 64);
   const tilesRemaining = gameTileCount[tileType];
-  // console.log(tilesRemaining, "tilesRemaining");
-  // will keep getting new tile types even if all values remaining are 0
-  if (tilesRemaining === 0) {
-    // console.log("No more of this type")
-    const refreshedTileType = String.fromCharCode(randInt + 64);
-    const refreshedTile = await getTile(refreshedTileType);
-    refreshedTile.key = randomTile._id;
-    return refreshedTile;
-  } else {
-    const randomTile = await getTile(tileType);
-    randomTile.key = randomTile._id;
-    return randomTile;
-  }
+
+  const randomTile = { ...(await import(`./src/data/TileType${tileType}.js`)) };
+
+  randomTile.default.key = randomTile.default._id;
+  return randomTile.default;
 };
 
 export const tileChecks = (
@@ -48,9 +40,8 @@ export const tileChecks = (
       },
     };
     console.log(updatedTile);
-    RPC.call("enemyTile",updatedTile, RPC.Mode.ALL);
+    RPC.call("enemyTile", updatedTile, RPC.Mode.ALL);
     return updatedTile;
-   
   });
 
   setNewTile2DPosition([i + 5, j + 5]);

@@ -74,6 +74,7 @@ export const adjacentTileCoords = (tile, directionNum) => {
 
 export const checkSide = (tile, directionNum, matrix) => {
     // get coordinates for the tile on that side
+    
     const sideTileCoords = adjacentTileCoords(tile, directionNum)
     // check tile is not off the grid
    
@@ -82,7 +83,7 @@ export const checkSide = (tile, directionNum, matrix) => {
         sideTileCoords.column < 0 ||
         sideTileCoords.column > 10)
         {return true}
-
+        
     // get the tile on that side
     let sideTile = matrix[sideTileCoords.row][sideTileCoords.column]
 
