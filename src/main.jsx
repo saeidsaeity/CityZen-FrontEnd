@@ -13,11 +13,13 @@ import { StrictMode } from 'react';
 import { BoardGameMatrixProvider } from './Context/BoardGameMatrixContext.jsx'
 import { RenderEnemyTileProvider } from './Context/RenderEnemyTileContext.jsx'
 import { ColourProvider } from './Context/ColourContext.jsx'
+import { SettingsProvider } from './Context/SettingsContext.jsx'
 
 const container = document.getElementById('root');
 
 const root = createRoot(container);
   root.render(
+    <SettingsProvider>
     <ColourProvider>
     <RenderEnemyTileProvider>
     <BoardGameMatrixProvider>
@@ -41,5 +43,6 @@ const root = createRoot(container);
     </BoardGameMatrixProvider>
     </RenderEnemyTileProvider>
     </ColourProvider>
+    </SettingsProvider>
   )
 

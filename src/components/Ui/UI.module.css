@@ -236,3 +236,13 @@ color:white;
     filter: brightness(80%);
 
   }
+  .settings{
+    left:20px;
+    padding: 8px;
+    background: none;
+    cursor: pointer;
+  
+  }
+  .settings:hover{
+    filter: brightness(80%);
+  }

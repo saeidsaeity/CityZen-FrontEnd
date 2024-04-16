@@ -28,8 +28,10 @@ import { TileTypeContext } from "../../Context/TileTypeContext.jsx";
 import { ColourContext } from "../../Context/ColourContext.jsx";
 import Mountain from "../../assets/environment/Mountain.jsx";
 import { TextureLoader } from "three";
+import { useNavigate } from "react-router-dom";
 const GameBoard = () => {
   // TILE
+  const navigate = useNavigate()
   const [enableRotate, setEnableRotate] = useState(true);
   const [sunPosition, setSunPosition] = useState([50, -6, 150]);
   const tileScale = [0.92, 0.92, 0.92];
@@ -148,7 +150,12 @@ const GameBoard = () => {
   };
 
   const me = myPlayer();
+  
+  
   useEffect(() => {
+    if(me===undefined){
+      navigate('/')
+    }
     RPC.register("tile", (data, caller) => {
       const splitkey = data.key.split("");
 
@@ -270,10 +277,13 @@ const GameBoard = () => {
   console.log("here");
   console.log(newTilePosition);
   useEffect(() => {
+    if(me){
     if (turnPhase === "Place Tile" && me.id === player.id)
       RPC.call("initialTile", {}, RPC.Mode.ALL);
+    }
   }, [turnPhase]);
 
+  if(me){
   return (
     <>
       <UI drawEventHandler={drawEventHandler} />
@@ -360,7 +370,7 @@ const GameBoard = () => {
               </RigidBody>
               <RigidBody type="fixed">
                 <mesh receiveShadow position-y={0}>
-                  <boxGeometry args={[50, 0.00001, 80]} />
+                  <boxGeometry args={[50, 0.2, 80]} />
                   <meshStandardMaterial transparent opacity={0} />
                 </mesh>
               </RigidBody>
@@ -406,6 +416,13 @@ const GameBoard = () => {
       </div>
     </>
   );
+}
+else{
+ 
+    navigate("/");
+  
+  
+}
 };
 
 export default GameBoard;

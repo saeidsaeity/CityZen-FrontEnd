@@ -16,6 +16,7 @@ import { TileDataContext } from "../../Context/TileDataContext.jsx";
 import { TileTypeContext } from "../../Context/TileTypeContext.jsx";
 import { BoardGameMatrixContext } from "../../Context/BoardGameMatrixContext.jsx";
 import { ColourContext } from "../../Context/ColourContext.jsx";
+import { SettingsContext } from "../../Context/SettingsContext.jsx";
 function TileControls({ drawEventHandler }) {
  const {
     setReleaseTile,
@@ -31,6 +32,7 @@ setRenderTileArr}= useContext(TileContext)
     const {newTileMesh,setNewTileMesh}=useContext(TileMeshContext)
     const {setNewTileType}= useContext(TileTypeContext)
     const {setBeamColour}=useContext(ColourContext)
+    const {volume,Setvolume}= useContext(SettingsContext)
     const tileScale = [0.92, 0.92, 0.92];
   const tileSize = 2;
   const {
@@ -43,7 +45,9 @@ setRenderTileArr}= useContext(TileContext)
   const { boardGameMatrix,
     setBoardGameMatrix}= useContext(BoardGameMatrixContext)
   const me = myPlayer();
-  const [playSound] = useSound("confirm.mp3");
+  const [playSound] = useSound("confirm.mp3",{
+    volume:volume/100
+  });
   
   const rotateTileHandler = () => {
     setTileRotation((currRotation) => {

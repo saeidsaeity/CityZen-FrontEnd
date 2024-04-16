@@ -11,6 +11,7 @@ import { TileRotationContext } from "../../Context/TileRotationContext";
 import { TileDataContext } from "../../Context/TileDataContext";
 import { TileTypeContext } from "../../Context/TileTypeContext";
 import { BoardGameMatrixContext } from "../../Context/BoardGameMatrixContext";
+import { SettingsContext } from "../../Context/SettingsContext";
 
 function CitizenControls() {
   
@@ -19,14 +20,20 @@ function CitizenControls() {
     setCitizenPosition,
     setShowCitizen,
     setCitizenArray,setReleaseCitizen}= useContext(BoardGameContext)
-
+    const {volume,SetVolume}=useContext(SettingsContext)
     const {newTileData,
       setNewTileData}=useContext(TileDataContext)
 
      const {tileRotation,setTileRotation} =  useContext(TileRotationContext)
-    const [sound] = useSound("drop.wav");
-    const [falling]= useSound('falling.mp3')
-    const [playSound] = useSound('confirm.mp3');
+    const [sound] = useSound("drop.wav",{
+      volume:volume/100
+    });
+    const [falling]= useSound('falling.mp3',{
+      volume:volume/100
+    })
+    const [playSound] = useSound('confirm.mp3',{
+      volume:volume/100
+    });
   const [placementOptions, setPlacementOptions] = useState([]);
   const [isMonastery, setIsMonastery] = useState(false);
   const [citizenControlledPosition, setCitizenControlledPosition] = useState();

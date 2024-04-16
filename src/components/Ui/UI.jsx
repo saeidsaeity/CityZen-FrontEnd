@@ -7,7 +7,7 @@ import {
   Text,
 } from "@react-three/drei";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faCircleInfo, faGear } from "@fortawesome/free-solid-svg-icons";
 
 import { Canvas } from "@react-three/fiber";
 import { Citizen } from "../../assets/citizens/Citizen";
@@ -24,6 +24,7 @@ import TileControls from "../TileControls/TileControls";
 import { BoardGameContext } from "../../Context/BoardGameContext";
 import { TileContext } from "../../Context/TileContext.jsx";
 import { TileTypeContext } from "../../Context/TileTypeContext.jsx";
+import Settings from "../Settings/Settings.jsx";
 
 export const UI = ({ drawEventHandler }) => {
   const { citizenPosition } = useContext(BoardGameContext);
@@ -34,6 +35,7 @@ export const UI = ({ drawEventHandler }) => {
   const [messages, setMessages] = useState([]);
   const [messageIds, setMessageIds] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const[settingsOpen,setSettingsOpen]=useState(false)
   const [loaded,setLoaded]= useState(false)
   useEffect(() => {
     
@@ -117,6 +119,14 @@ export const UI = ({ drawEventHandler }) => {
         style={{ color: "lightgray" }}
         size="2xl"
       />
+      <FontAwesomeIcon icon={faGear} 
+      className={styles.settings}
+        onClick={()=> setSettingsOpen(true)}
+        size="2xl"
+        style={{color:'red'}}
+      
+      />
+
       <div className={styles.messageArea}>
         {messages.map((msg, index) => (
           <div key={`chatmessage-${index}`} className={styles.message}>
@@ -227,7 +237,7 @@ export const UI = ({ drawEventHandler }) => {
           </Canvas>
         </div>
       </Suspense>
-
+      {settingsOpen? <Settings setSettingsOpen={setSettingsOpen}/>: null}
       {isOpen ? <PopUpRules setIsOpen={setIsOpen} /> : null}
       {turnPhase === "Place Citizen" && player.id === me.id ? (
         <CitizenControls me={me} />

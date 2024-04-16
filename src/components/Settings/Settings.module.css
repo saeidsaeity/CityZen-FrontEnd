@@ -1,0 +1,38 @@
+.bg {
+    background-color: rgba(0, 0, 0, 0.91);
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: fixed;
+    opacity: 0.5;
+  }
+
+  .centered {
+    z-index: 50;
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .modal {
+    width: 50vw;
+    max-width: ;
+    height: 170px;
+    color: white;
+    z-index: 10;
+    border-radius: 16px;
+    box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.04);
+    background-color: rgba(255, 255, 255, 0.722);
+
+  }
+  .modalContent {
+    padding: 2rem;
+    font-size: 14px;
+    color:black;
+    text-align: center;
+    line-height: 1.5rem;
+   
+  }
