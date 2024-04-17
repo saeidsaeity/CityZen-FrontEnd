@@ -13,7 +13,7 @@ import { checkTilePlacement } from "../../Views/GameBoard/verifyFunctions.js";
 import { ColourContext } from "../../Context/ColourContext.jsx";
 import { SettingsContext } from "../../Context/SettingsContext.jsx";
 
-export const GameBoardCells = ({ newTilePosition }) => {
+export const GameBoardCells = () => {
   const {volume,SetVolume}= useContext(SettingsContext)
   const [sound] = useSound("drop.wav",{
     volume:volume/100

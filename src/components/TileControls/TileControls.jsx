@@ -40,7 +40,11 @@ setRenderTileArr}= useContext(TileContext)
     players,
     phaseEnd,
     gameTileCount,
-    setNewTilePosition
+    setNewTilePosition,
+    newTilePosition,
+    setGameTileCount
+
+
   } = useGameEngine();
   const { boardGameMatrix,
     setBoardGameMatrix}= useContext(BoardGameMatrixContext)
@@ -92,15 +96,18 @@ setRenderTileArr}= useContext(TileContext)
   };
 
   const confirmTileHandler = () => {
-    
+    if(!newTilePosition){
+      return null
+    }
     if (checkTilePlacement(newTileData, boardGameMatrix)) {
       setReplaceTile(false);
      
     
       RPC.call("tile", newTileMesh, RPC.Mode.ALL);
       RPC.call("confirmMatrix",{pos1:newTile2DPosition[0],pos2:newTile2DPosition[1]},RPC.Mode.ALL)
-     
-   
+      console.log(newTileData.tile_type);
+        gameTileCount.splice(gameTileCount.indexOf(newTileData.tile_type),1)
+        setGameTileCount(gameTileCount)
       setNewTileMesh(null);
       setReleaseTile(false);
       setNewTilePosition(null)

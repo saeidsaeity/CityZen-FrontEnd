@@ -67,14 +67,17 @@ const GameBoard = () => {
   const { setNewTileType } = useContext(TileTypeContext);
   const { beamColour, setBeamColour } = useContext(ColourContext);
   const [tempCitizen, setTempCitizen] = useState([]);
+  
   // STATES //
   // CAMERA & ENVIRONMENT
   const {
     turnPhase,
     newTilePosition,
-
+    gameTileCount,
     players,
     playerTurn,
+    endgame,
+    setEndgame
   } = useGameEngine();
   const [colorMap, displacementMap, roughnessMap] = useLoader(TextureLoader, [
     "aerial_grass_rock_diff_4k.jpg",
@@ -248,20 +251,7 @@ const GameBoard = () => {
         setTempCitizen(citiz)
       );
     });
-    RPC.register("initialTile", (data, caller) => {
-      if (me.id === player.id) {
-        setReleaseTile(false);
-        setShowTile(false);
-        randomTileGenerator(74).then((randomTile) => {
-          setNewTileData(randomTile);
-          drawEventHandler(randomTile.tile_type);
-          // RPC.call('enemyTile',tileOutput,RPC.Mode.ALL)
-          setNewTileType(randomTile.tile_type);
-          setShowTile(true);
-          setReplaceTile(true);
-        });
-      }
-    });
+   
   }, []);
 
   //console.log(renderEnemyTile);
@@ -278,11 +268,60 @@ const GameBoard = () => {
   console.log(newTilePosition);
   useEffect(() => {
     if(me){
-    if (turnPhase === "Place Tile" && me.id === player.id)
-      RPC.call("initialTile", {}, RPC.Mode.ALL);
+    if (turnPhase === "Place Tile" && me.id === player.id){
+     
+      setReleaseTile(false);
+      setShowTile(false);
+      randomTileGenerator(gameTileCount).then((randomTile) => {
+        if(randomTile === null){
+          setEndgame(true)
+        }
+        else{
+        setNewTileData(randomTile);
+        drawEventHandler(randomTile.tile_type);
+        // RPC.call('enemyTile',tileOutput,RPC.Mode.ALL)
+        setNewTileType(randomTile.tile_type);
+        setShowTile(true);
+        setReplaceTile(true);
+        }
+      })
     }
+  }
   }, [turnPhase]);
-
+  if(endgame){
+    console.log(players);
+    players.sort((a,b)=>{
+      if (a.state.score<b.state.score) {
+        return 1;
+      } else if (a.state.score>b.state.score) {
+        return -1;
+      }
+      // a must be equal to b
+      return 0;
+    })
+  
+   
+    return(
+      <>
+      <p className={styles.gameOver}>Game Over</p>
+      {players.map((player, index) => {
+        console.log(index);
+        return (
+          <div
+            key={index}
+            style={{ backgroundColor: player.state.profile.color }}
+            className={styles.eachPlayer}
+          >
+            <img src={player.state.profile.photo} className={styles.playerImg} />
+            <p className={styles.playerName}>{player.state.profile.name}</p>
+            <p className={styles.score}>Score: {player.state.score}</p>
+            {index===0?<p className={styles.winner}>Winner</p>: null}
+          </div>
+        );
+      })}
+      </>
+    )
+  }
   if(me){
   return (
     <>

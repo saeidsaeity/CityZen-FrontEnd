@@ -3,10 +3,13 @@ import { getTile } from "./src/api";
 import { myPlayer, RPC } from "playroomkit";
 
 export const randomTileGenerator = async (gameTileCount) => {
-  const randInt = Math.floor(Math.random() * 23 + 1);
-  const tileType = String.fromCharCode(randInt + 64);
-  const tilesRemaining = gameTileCount[tileType];
-
+  const randInt = Math.floor(Math.random() * gameTileCount.length);
+  const tileType = gameTileCount[randInt];
+  console.log(gameTileCount);
+  if(gameTileCount.length===0){
+    console.log('here');
+    return null
+  }
   const randomTile = { ...(await import(`./src/data/TileType${tileType}.js`)) };
 
   randomTile.default.key = randomTile.default._id;

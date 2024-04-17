@@ -64,3 +64,38 @@
     left: 1rem;
     z-index: 5;
   }
+  .playerImg{
+    width: 200px;
+    height:200px;
+  }
+  .playerName{
+    color: white;
+    font-size: 3em;
+    
+  }
+  .score{
+    color: white;
+    font-size: 2em;
+    position: relative;
+    left: 20em;
+    bottom: 5em;
+    
+  }
+  .winner{
+    color: gold;
+    font-size: 2em;
+    position: relative;
+    bottom: 2em;
+    left: 1em;
+    animation: sparkle 1s infinite alternate; 
+  }
+  @keyframes sparkle {
+    0% {
+        text-shadow: 0 0 5px gold, 0 0 10px gold, 0 0 15px gold, 0 0 20px gold, 0 0 25px gold, 0 0 30px gold, 0 0 35px gold;
+    }
+    
+   
+    100% {
+        text-shadow: none;
+    }
+  }

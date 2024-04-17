@@ -39,39 +39,18 @@ export const GameEngineProvider = ({ children }) => {
     "NewTilePosition",
     []
   );
-
+  const[endgame,setEndgame]=useMultiplayerState('endgame',false)
   // const [playerTile, setPlayerTile] = useMultiplayerState('playerTile', null)
   // const [grid, setGrid] = useMultiplayerState('grid', [])
   // const [gridSpaces, setGridSpaces] = useMultiplayerState('gridSpaces', [])
 
+  // const [gameTileCount, setGameTileCount] = useMultiplayerState(
+  //   "gameTileCount",
+  //   ['A','A','B','B','B','B','C','D','D','D','E','E','E','E','E','F','F','G','H','H','H','I','I','J','J','J','K','K','K','L','L','L','M','M','N','N','N','O','O','P','P','P','Q','R','R','R','S','S','T','U','U','U','U','U','U','U','U','V','V','V','V','V','V','V','V','V','W','W','W','W','X']
+  // );
   const [gameTileCount, setGameTileCount] = useMultiplayerState(
     "gameTileCount",
-    {
-      A: 2,
-      B: 4,
-      C: 1,
-      D: 3, // first tile already on board
-      E: 5,
-      F: 2,
-      G: 1,
-      H: 3,
-      I: 2,
-      J: 3,
-      K: 3,
-      L: 3,
-      M: 2,
-      N: 3,
-      O: 2,
-      P: 3,
-      Q: 1,
-      R: 3,
-      S: 2,
-      T: 1,
-      U: 8,
-      V: 9,
-      W: 4,
-      X: 1,
-    }
+    ['A','E','H','I']
   );
 
   // Create platers and sort them so all players have same order of players
@@ -246,12 +225,14 @@ export const GameEngineProvider = ({ children }) => {
     tileDeck,
     players,
     phaseEnd,
-
+    setGameTileCount,
     gameTileCount,
     scoreBoard,
     setScoreBoard,
     newTilePosition,
     setNewTilePosition,
+    endgame,
+    setEndgame
   };
 
   return (

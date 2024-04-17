@@ -64,6 +64,9 @@ function CitizenControls() {
 
   const confirmCitizenHandler = () => {
     if (currentAsset && currentCompass + 1) {
+      if(!citizenControlledPosition){
+        return null
+      }
       setNewTileData((currTileData) => {
         console.log(currTileData, "currTileData");
         const changeTileData = { ...currTileData };
