@@ -68,7 +68,7 @@ export const tileChecks = (
 export const tileColourLogic = (i, j, boardGameMatrix, isCitizenPhase) => {
   const{allowedTiles,setAllowedTiles}=useContext(TileContext)
   const { setNewTileData, newTileData } = useContext(TileDataContext);
-  console.log( { ...newTileData,grid_id:{row:i+5,column:j+5} , orientation: 0 });
+  // console.log( { ...newTileData,grid_id:{row:i+5,column:j+5} , orientation: 0 });
   if (i === -5 || j === -5) {
     if (
       boardGameMatrix[i + 5][j + 5]?.length === 0 &&

@@ -64,7 +64,7 @@ setRenderTileArr}= useContext(TileContext)
       const newrotationtile = {...currTileData}
       newrotationtile.orientation =
       ((tileRotation - Math.PI / 2) * -1 * (180 / Math.PI)) % 360;
-      console.log(newrotationtile);
+      // console.log(newrotationtile);
       if (checkTilePlacement(newrotationtile, boardGameMatrix)) {
         setBeamColour('green')
       }
@@ -105,7 +105,7 @@ setRenderTileArr}= useContext(TileContext)
     
       RPC.call("tile", newTileMesh, RPC.Mode.ALL);
       RPC.call("confirmMatrix",{pos1:newTile2DPosition[0],pos2:newTile2DPosition[1]},RPC.Mode.ALL)
-      console.log(newTileData.tile_type);
+      // console.log(newTileData.tile_type);
         gameTileCount.splice(gameTileCount.indexOf(newTileData.tile_type),1)
         setGameTileCount(gameTileCount)
       setNewTileMesh(null);

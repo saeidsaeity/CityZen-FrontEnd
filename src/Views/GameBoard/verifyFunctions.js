@@ -95,7 +95,7 @@ export const checkSide = (tile, directionNum, matrix) => {
        
     // get corresponding asset of side tile
     const sideDirectionNum = (directionNum + 2) % 4
-    console.log(sideTile);
+    // console.log(sideTile);
     const sideTileAsset = assetInDirection(sideTile, sideDirectionNum)
     // return true if assets are the same:
     return tileAsset.asset === sideTileAsset.asset
@@ -238,7 +238,7 @@ export const checkTileCompletes = (origTile, matrix) => {
 
                 // if tile does not exist, asset has not yet ended, so end the function
                 let tile = null
-                console.log(matrix);
+                // console.log(matrix);
                 if(matrix[tileInfo.coords.row][tileInfo.coords.column]){
                  tile = matrix[tileInfo.coords.row][tileInfo.coords.column][0]
                 }

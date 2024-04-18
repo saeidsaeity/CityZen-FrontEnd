@@ -31,6 +31,9 @@ import Tree from "../../assets/environment/Tree.jsx"
 import { TextureLoader } from "three";
 import { useNavigate } from "react-router-dom";
 import { checkTilePlacement } from "./verifyFunctions.js";
+
+
+
 const GameBoard = () => {
   // TILE
   const navigate = useNavigate()
@@ -72,6 +75,7 @@ const GameBoard = () => {
   const [tempCitizen, setTempCitizen] = useState([]);
   const{boardGameMatrix}= useContext(BoardGameMatrixContext)
   const[unavailabeTileType,setUnavailabeTileType]=useState([])
+
   // STATES //
   // CAMERA & ENVIRONMENT
   const {
@@ -183,7 +187,7 @@ const GameBoard = () => {
         });
       });
       setRenderEnemyTile(null);
-      console.log(renderTileArr);
+      // console.log(renderTileArr);
     });
 
     RPC.register("citizen", (data, caller) => {
@@ -237,9 +241,9 @@ const GameBoard = () => {
     });
 
     RPC.register("enemyTile", (data, caller) => {
-      console.log(data);
-      console.log(data.pos);
-      console.log(data.newTileMesh);
+      // console.log(data);
+      // console.log(data.pos);
+      // console.log(data.newTileMesh);
       const TileTypeEnemy = data.key.split("");
       getRenderTileMesh(
         TileTypeEnemy[0],
@@ -269,7 +273,7 @@ const GameBoard = () => {
   // console.log(releaseTile)
   //   console.log(replaceTile);
   console.log("here");
-  console.log(newTilePosition);
+  // console.log(newTilePosition);
 function checkIfTileCanBePlaced(params) {
   const allowedTiles=[]
   for (let i = -5; i < 6; i++) {
@@ -303,7 +307,7 @@ function tileRequest(oldTile) {
      
       
       const allowedTiles = checkIfTileCanBePlaced()
-      console.log(allowedTiles);
+      // console.log(allowedTiles);
       setReleaseTile(false);
       setShowTile(false);
     
@@ -345,6 +349,9 @@ function tileRequest(oldTile) {
   useEffect(() => {
     tileRequest()
   }, [turnPhase]);
+  
+  
+
   if(endgame){
     console.log(players);
     players.sort((a,b)=>{
@@ -379,6 +386,8 @@ function tileRequest(oldTile) {
       </>
     )
   }
+
+
   if(me){
   return (
     <>
@@ -452,7 +461,8 @@ function tileRequest(oldTile) {
                 </RigidBody>
               ) : null}
               {/* {otherPlayerTile ?  renderEnemyTile :null} */}
-              {renderTileArr}
+              <group>{renderTileArr}</group>
+
               {citizenArray}
               <RigidBody type="fixed">
                 <mesh receiveShadow position-y={-0.5}>
