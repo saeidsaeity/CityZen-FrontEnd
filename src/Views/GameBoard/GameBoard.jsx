@@ -27,8 +27,10 @@ import { randomTileGenerator } from "../../../utils.js";
 import { TileTypeContext } from "../../Context/TileTypeContext.jsx";
 import { ColourContext } from "../../Context/ColourContext.jsx";
 import Mountain from "../../assets/environment/Mountain.jsx";
+import Tree from "../../assets/environment/Tree.jsx"
 import { TextureLoader } from "three";
 import { useNavigate } from "react-router-dom";
+import { checkTilePlacement } from "./verifyFunctions.js";
 const GameBoard = () => {
   // TILE
   const navigate = useNavigate()
@@ -56,6 +58,7 @@ const GameBoard = () => {
     setShowTile,
     replaceTile,
     setReplaceTile,
+    
   } = useContext(TileContext);
   const { renderEnemyTile, setRenderEnemyTile } = useContext(
     RenderEnemyTileContext
@@ -67,7 +70,8 @@ const GameBoard = () => {
   const { setNewTileType } = useContext(TileTypeContext);
   const { beamColour, setBeamColour } = useContext(ColourContext);
   const [tempCitizen, setTempCitizen] = useState([]);
-  
+  const{boardGameMatrix}= useContext(BoardGameMatrixContext)
+  const[unavailabeTileType,setUnavailabeTileType]=useState([])
   // STATES //
   // CAMERA & ENVIRONMENT
   const {
@@ -242,7 +246,7 @@ const GameBoard = () => {
         data.props.position,
         -data.props.rotation[1]
       ).then((outputtile) => {
-        console.log(outputtile);
+      
         setRenderEnemyTile(outputtile);
       });
     });
@@ -266,27 +270,80 @@ const GameBoard = () => {
   //   console.log(replaceTile);
   console.log("here");
   console.log(newTilePosition);
-  useEffect(() => {
-    if(me){
+function checkIfTileCanBePlaced(params) {
+  const allowedTiles=[]
+  for (let i = -5; i < 6; i++) {
+    for (let j = -5; j < 6; j++) {
+  if (i === -5 || j === -5) {
+    if (
+      boardGameMatrix[i + 5][j + 5]?.length === 0 &&
+      (boardGameMatrix[i + 6][j + 5]?.length > 0 ||
+        boardGameMatrix[i + 5][j + 6]?.length > 0 ||
+        boardGameMatrix[i + 5][j + 4]?.length > 0)
+    ) {
+      allowedTiles.push([i+5,j+5])
+    }
+  } else if (
+    boardGameMatrix[i + 5][j + 5]?.length === 0 &&
+    (boardGameMatrix[i + 4][j + 5]?.length > 0 ||
+      boardGameMatrix[i + 5][j + 4]?.length > 0 ||
+      boardGameMatrix[i + 6][j + 5]?.length > 0 ||
+      boardGameMatrix[i + 5][j + 6]?.length > 0)
+  ) {
+    
+    allowedTiles.push([i+5,j+5])
+  }
+}
+  }
+  return allowedTiles
+}
+function tileRequest(oldTile) {
+  if(me){
     if (turnPhase === "Place Tile" && me.id === player.id){
      
+      
+      const allowedTiles = checkIfTileCanBePlaced()
+      console.log(allowedTiles);
       setReleaseTile(false);
       setShowTile(false);
-      randomTileGenerator(gameTileCount).then((randomTile) => {
+    
+      randomTileGenerator(gameTileCount,oldTile).then((randomTile) => {
         if(randomTile === null){
           setEndgame(true)
         }
         else{
+          if(!allowedTiles.some((allowedTile)=>{
+            const checkdata = JSON.parse(JSON.stringify(randomTile))
+            checkdata.grid_id = {
+              row: allowedTile[0],
+              column: allowedTile[1],
+            };
+  
+            return checkTilePlacement({...checkdata,orientation: 0},boardGameMatrix) ||checkTilePlacement({...checkdata,orientation: 90 },boardGameMatrix)|| checkTilePlacement({...checkdata,orientation: 180},boardGameMatrix) ||checkTilePlacement({...checkdata,orientation: 270 },boardGameMatrix)
+          })){
+            setUnavailabeTileType((currArray)=>{
+              tileRequest([...currArray,randomTile.tile_type])
+              return [...currArray,randomTile.tile_type]
+            })
+           
+            console.log('no where to place');
+          }
+          setUnavailabeTileType([])
         setNewTileData(randomTile);
         drawEventHandler(randomTile.tile_type);
         // RPC.call('enemyTile',tileOutput,RPC.Mode.ALL)
         setNewTileType(randomTile.tile_type);
         setShowTile(true);
         setReplaceTile(true);
+        
         }
       })
     }
   }
+  
+}
+  useEffect(() => {
+    tileRequest()
   }, [turnPhase]);
   if(endgame){
     console.log(players);
@@ -446,6 +503,13 @@ const GameBoard = () => {
               position={[0, -1, 40]}
               rotation={[0, -Math.PI / 2, 0]}
             />
+            <Tree scale={[5,5,5]} position={[15,0,0]}/>
+            <Tree scale={[5,5,5]} position={[0,0,15]}/>
+            <Tree scale={[5,5,5]} position={[-4,0,15]} rotation={[0,-Math.PI / 2, 0]}/>
+            <Tree scale={[5,5,5]} position={[0,0,-16]}/>
+            <Tree scale={[5,5,5]} position={[-4,0,-16]} rotation={[0,-Math.PI / 2, 0]}/>
+            <Tree scale={[5,5,5]} position={[8,0,-16]}/>
+            <Tree scale={[5,5,5]} position={[8,0,-16]} rotation={[0,-Math.PI / 2, 0]}/>
             {/* HELPERS */}
             {/* <Perf position="top-left" /> */}
             {/* <axesHelper args={[5]} />

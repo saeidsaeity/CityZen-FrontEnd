@@ -23,7 +23,8 @@ export const GameBoardCells = () => {
   });
   const tileScale = [0.92, 0.92, 0.92];
   const tileSize = 2;
-  const { setReleaseTile, setNewTile2DPosition } = useContext(TileContext);
+  const { setReleaseTile, setNewTile2DPosition,allowedTiles,
+    setAllowedTiles } = useContext(TileContext);
   const { setNewTileData, newTileData } = useContext(TileDataContext);
   const { newTileMesh, setNewTileMesh } = useContext(TileMeshContext);
   const { beamColour, setBeamColour } = useContext(ColourContext);
@@ -45,85 +46,8 @@ export const GameBoardCells = () => {
     for (let j = -5; j < 6; j++) {
       // Create the tile
       const position = new THREE.Vector3(i, 0, j);
-      const tile = (
-       
-          <mesh
-            key={`${i}-${j}-tile`}
-            onClick={() => {
-              if (newTileMesh) {
-                if (me.id === player.id) {
-                  if (turnPhase !== "Place Tile") {
-                    console.log("You can not place during the citizen phase!");
-                    return [];
-                  }
-                  if (i === -5 || j === -5) {
-                    // board edge case
-                    if (
-                      boardGameMatrix[i + 5][j + 5]?.length === 0 &&
-                      (boardGameMatrix[i + 6][j + 5]?.length > 0 ||
-                        boardGameMatrix[i + 5][j + 6]?.length > 0 ||
-                        boardGameMatrix[i + 5][j + 4]?.length > 0)
-                    ) {
-                      falling();
-
-                      tileChecks(
-                        position.x,
-                        position.z,
-                        i,
-                        j,
-                        setReleaseTile,
-                        setNewTilePosition,
-                        setNewTile2DPosition,
-                        tileSize,
-                        newTileMesh,
-                        setNewTileMesh
-                      );
-                      setNewTileData((currTileData) => {
-                        const newtilepos = { ...currTileData };
-                        newtilepos.grid_id = {
-                          row: position.x,
-                          column: position.z,
-                        };
-                        if (checkTilePlacement(newtilepos, boardGameMatrix)) {
-                          setBeamColour("green");
-                        } else if (
-                          checkTilePlacement(
-                            { ...newtilepos, orientation: 0 },
-                            boardGameMatrix
-                          ) ||
-                          checkTilePlacement(
-                            { ...newtilepos, orientation: 90 },
-                            boardGameMatrix
-                          ) ||
-                          checkTilePlacement(
-                            { ...newtilepos, orientation: 180 },
-                            boardGameMatrix
-                          ) ||
-                          checkTilePlacement(
-                            { ...newtilepos, orientation: 270 },
-                            boardGameMatrix
-                          )
-                        ) {
-                          setBeamColour("orange");
-                        } else {
-                          setBeamColour("red");
-                        }
-                        return newtilepos;
-                      });
-                      console.log(newTileMesh);
-                      setTimeout(function () {
-                        sound();
-                      }, 900);
-                    }
-                  } else if (
-                    // selected a green tile
-                    boardGameMatrix[i + 5][j + 5]?.length === 0 &&
-                    (boardGameMatrix[i + 4][j + 5]?.length > 0 ||
-                      boardGameMatrix[i + 5][j + 4]?.length > 0 ||
-                      boardGameMatrix[i + 6][j + 5]?.length > 0 ||
-                      boardGameMatrix[i + 5][j + 6]?.length > 0)
-                  ) {
-                    falling();
+      function onClickEvent() {
+        falling();
                     //setReleaseTile(!releaseTile);
 
                     tileChecks(
@@ -174,6 +98,39 @@ export const GameBoardCells = () => {
                     setTimeout(function () {
                       sound();
                     }, 1000);
+        
+      }
+      const tile = (
+       
+          <mesh
+            key={`${i}-${j}-tile`}
+            onClick={() => {
+              if (newTileMesh) {
+                if (me.id === player.id) {
+                  if (turnPhase !== "Place Tile") {
+                    console.log("You can not place during the citizen phase!");
+                    return [];
+                  }
+                  if (i === -5 || j === -5) {
+                    // board edge case
+                    if (
+                      boardGameMatrix[i + 5][j + 5]?.length === 0 &&
+                      (boardGameMatrix[i + 6][j + 5]?.length > 0 ||
+                        boardGameMatrix[i + 5][j + 6]?.length > 0 ||
+                        boardGameMatrix[i + 5][j + 4]?.length > 0)
+                    ) {
+                     onClickEvent()
+                    }
+                  } else if (
+                    // selected a green tile
+                    boardGameMatrix[i + 5][j + 5]?.length === 0 &&
+                    (boardGameMatrix[i + 4][j + 5]?.length > 0 ||
+                      boardGameMatrix[i + 5][j + 4]?.length > 0 ||
+                      boardGameMatrix[i + 6][j + 5]?.length > 0 ||
+                      boardGameMatrix[i + 5][j + 6]?.length > 0)
+                  ) {
+                    onClickEvent()
+                    
                   }
                 }
               } else {

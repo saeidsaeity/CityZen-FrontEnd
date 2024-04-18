@@ -95,6 +95,7 @@ export const checkSide = (tile, directionNum, matrix) => {
        
     // get corresponding asset of side tile
     const sideDirectionNum = (directionNum + 2) % 4
+    console.log(sideTile);
     const sideTileAsset = assetInDirection(sideTile, sideDirectionNum)
     // return true if assets are the same:
     return tileAsset.asset === sideTileAsset.asset
@@ -183,6 +184,7 @@ export const checkTileCompletes = (origTile, matrix) => {
     directions.forEach((directionNum) => {
 
         // get tile asset for that direction
+        
         const directionAsset = assetInDirection(origTile, directionNum)
         
         // only proceed if asset is road or city
@@ -235,9 +237,19 @@ export const checkTileCompletes = (origTile, matrix) => {
                 const tileInfo = tilesToCheck[i]
 
                 // if tile does not exist, asset has not yet ended, so end the function
-                const tile = matrix[tileInfo.coords.row][tileInfo.coords.column][0]
+                let tile = null
+                console.log(matrix);
+                if(matrix[tileInfo.coords.row][tileInfo.coords.column]){
+                 tile = matrix[tileInfo.coords.row][tileInfo.coords.column][0]
+                }
+                else{
+                    tile === undefined
+                }
                 if (tile === undefined) {return}
-
+                console.log(tile);
+                if(tile === null){
+                    return
+                }
                 // fetch asset in corresponding direction
                 const tileAsset = assetInDirection(tile, tileInfo.dir)
 

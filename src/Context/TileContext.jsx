@@ -13,7 +13,7 @@ export const TileProvider = ({ children }) => {
   const [renderTileArr, setRenderTileArr] = useState([]); // renders 3D models to canvas
   const [replaceTile, setReplaceTile] = useState(true);
   const [showTile, setShowTile] = useState(false);
-  
+  const [allowedTiles,setAllowedTiles]=useState([])
   return (
     <TileContext.Provider
       value={{
@@ -28,7 +28,9 @@ export const TileProvider = ({ children }) => {
         showTile,
         setShowTile,
         newTilePosition,
-        setNewTilePosition
+        setNewTilePosition,
+        allowedTiles,
+        setAllowedTiles
       }}
     >
       {children}

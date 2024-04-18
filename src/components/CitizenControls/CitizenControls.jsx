@@ -136,10 +136,10 @@ function CitizenControls() {
       if (compass === 'S') xCoord += adjustment;
       if (compass === 'W') yCoord -= adjustment;
     }
-    if (isMonastery === true) {
-      xCoord -= adjustment;
-      yCoord += adjustment;
-    }
+    // if (isMonastery === true) {
+    //   xCoord -= adjustment;
+    //   yCoord += adjustment;
+    // }
     setCitizenPosition([xCoord * 2, 4, yCoord * 2]);
     setCitizenControlledPosition([xCoord * 2, 4, yCoord * 2]);
     RPC.call("showCitizen",{position:[xCoord * 2, 4, yCoord * 2],colour:me.state.profile.color},RPC.Mode.ALL)

@@ -44,14 +44,14 @@ export const GameEngineProvider = ({ children }) => {
   // const [grid, setGrid] = useMultiplayerState('grid', [])
   // const [gridSpaces, setGridSpaces] = useMultiplayerState('gridSpaces', [])
 
-  // const [gameTileCount, setGameTileCount] = useMultiplayerState(
-  //   "gameTileCount",
-  //   ['A','A','B','B','B','B','C','D','D','D','E','E','E','E','E','F','F','G','H','H','H','I','I','J','J','J','K','K','K','L','L','L','M','M','N','N','N','O','O','P','P','P','Q','R','R','R','S','S','T','U','U','U','U','U','U','U','U','V','V','V','V','V','V','V','V','V','W','W','W','W','X']
-  // );
   const [gameTileCount, setGameTileCount] = useMultiplayerState(
     "gameTileCount",
-    ['A','E','H','I']
+    ['A','A','B','B','B','B','C','D','D','D','E','E','E','E','E','F','F','G','H','H','H','I','I','J','J','J','K','K','K','L','L','L','M','M','N','N','N','O','O','P','P','P','Q','R','R','R','S','S','T','U','U','U','U','U','U','U','U','V','V','V','V','V','V','V','V','V','W','W','W','W','X']
   );
+  // const [gameTileCount, setGameTileCount] = useMultiplayerState(
+  //   "gameTileCount",
+  //   ['C','C','L','D']
+  // );
 
   // Create platers and sort them so all players have same order of players
   const players = usePlayersList(true);
