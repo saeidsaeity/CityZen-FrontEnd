@@ -111,8 +111,10 @@ setRenderTileArr}= useContext(TileContext)
       setNewTileMesh(null);
       setReleaseTile(false);
       setNewTilePosition(null)
+      setBeamColour(null)
       playSound();
       phaseEnd();
+     
     } else {
       console.log("tile can not be placed there");
       alert(
@@ -131,7 +133,7 @@ setRenderTileArr}= useContext(TileContext)
         Rotate
       </button>
 
-      <button
+      {/* <button
         style={{ backgroundColor: me.state.profile.color }}
         className={styles.button}
         onClick={async () => {
@@ -148,7 +150,7 @@ setRenderTileArr}= useContext(TileContext)
         }}
       >
         {showTile ? "Take a new tile" : "Draw a tile"}
-      </button>
+      </button> */}
 
       <button
         style={{ backgroundColor: me.state.profile.color }}

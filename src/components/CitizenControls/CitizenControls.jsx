@@ -84,7 +84,7 @@ function CitizenControls() {
         const scoreObj = checkTileCompletes(changeTileData, newerBoard);
         for (let i = 0; i < players.length; i++) {
           if (scoreObj[i]) {
-            const playerScore = players[i].state.score;
+            const playerScore = players[i].state.score || 0
             players[i].setState('score', playerScore + scoreObj[i], true);
           }
         }

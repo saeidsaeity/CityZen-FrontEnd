@@ -33,7 +33,7 @@ export const GameBoardCells = () => {
     setNewTilePosition,
 
     turnPhase,
-    isCitizenPhase,
+    
     players,
     playerTurn,
   } = useGameEngine();
@@ -100,6 +100,27 @@ export const GameBoardCells = () => {
                     }, 1000);
         
       }
+      let checks = true
+      if(newTileData && me.id === player.id){
+        
+         checks = checkTilePlacement(
+          { ...newTileData,grid_id:{row:i+5, column: j+5}, orientation: 0 },
+          boardGameMatrix
+        ) ||
+        checkTilePlacement(
+          { ...newTileData,grid_id:{row:i+5, column: j+5}, orientation: 90 },
+          boardGameMatrix
+        ) ||
+        checkTilePlacement(
+          { ...newTileData,grid_id:{row:i+5, column: j+5}, orientation: 180 },
+          boardGameMatrix
+        ) ||
+        checkTilePlacement(
+          { ...newTileData,grid_id:{row:i+5, column: j+5}, orientation: 270 },
+          boardGameMatrix
+        )
+      }
+      
       const tile = (
        
           <mesh
@@ -117,7 +138,7 @@ export const GameBoardCells = () => {
                       boardGameMatrix[i + 5][j + 5]?.length === 0 &&
                       (boardGameMatrix[i + 6][j + 5]?.length > 0 ||
                         boardGameMatrix[i + 5][j + 6]?.length > 0 ||
-                        boardGameMatrix[i + 5][j + 4]?.length > 0)
+                        boardGameMatrix[i + 5][j + 4]?.length > 0) && checks
                     ) {
                      onClickEvent()
                     }
@@ -127,7 +148,7 @@ export const GameBoardCells = () => {
                     (boardGameMatrix[i + 4][j + 5]?.length > 0 ||
                       boardGameMatrix[i + 5][j + 4]?.length > 0 ||
                       boardGameMatrix[i + 6][j + 5]?.length > 0 ||
-                      boardGameMatrix[i + 5][j + 6]?.length > 0)
+                      boardGameMatrix[i + 5][j + 6]?.length > 0)&&checks
                   ) {
                     onClickEvent()
                     
@@ -142,7 +163,7 @@ export const GameBoardCells = () => {
           >
             <boxGeometry args={[tileSize, 0.01, tileSize]} />
             <meshPhongMaterial
-              color={tileColourLogic(i, j, boardGameMatrix, isCitizenPhase)}
+              color={tileColourLogic(i, j, boardGameMatrix,turnPhase, checks)}
               transparent={true}
               opacity={0.5}
               receiveShadow

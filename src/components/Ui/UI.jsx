@@ -25,7 +25,7 @@ import { BoardGameContext } from "../../Context/BoardGameContext";
 import { TileContext } from "../../Context/TileContext.jsx";
 import { TileTypeContext } from "../../Context/TileTypeContext.jsx";
 import Settings from "../Settings/Settings.jsx";
-
+import Sparkles from "../../effects/Sparkle.jsx";
 export const UI = ({ drawEventHandler }) => {
   const { citizenPosition } = useContext(BoardGameContext);
   const { showTile, setShowTile } = useContext(TileContext);
@@ -178,17 +178,22 @@ export const UI = ({ drawEventHandler }) => {
           <h2>Place a citizen / End turn</h2>
         ) : null}
       </div>
-      {players.map((player, index) => {
+      {players.map((iplayer, index) => {
         return (
+          
           <div
             key={index}
-            style={{ backgroundColor: player.state.profile.color }}
-            className={styles.eachPlayer}
+            style={{ backgroundColor: iplayer.state.profile.color }}
+            className={`${styles.eachPlayer} ${me.id===iplayer.id ? styles.glowBorder : ''} ${player.id===iplayer.id ? styles.red : ''} `}
           >
-            <img src={player.state.profile.photo} />
-            <p>{player.state.profile.name}</p>
-            <p className={styles.score}>{player.state.score}</p>
+            <img src={iplayer.state.profile.photo} />
+            <Sparkles shouldWrap={me.id===iplayer.id}>
+            <p>{iplayer.state.profile.name}</p>
+            
+            </Sparkles>
+            <p className={styles.score}>{iplayer.state.score || 0}</p>
           </div>
+
         );
       })}
       <Suspense

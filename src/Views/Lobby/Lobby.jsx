@@ -7,7 +7,7 @@ function Lobby(){
     const navigate = useNavigate()
 
     useEffect(()=>{
-        insertCoin().then(()=>{
+        insertCoin({ matchmaking: true}).then(()=>{
             navigate('/gameboard')
         })
     },[])

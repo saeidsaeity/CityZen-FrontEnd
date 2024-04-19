@@ -1,5 +1,5 @@
 import { Suspense, useEffect, useState, useContext } from "react";
-import { OrbitControls, Sky, Stars } from "@react-three/drei";
+import { Merged, OrbitControls, PerformanceMonitor, Sky, Stars } from "@react-three/drei";
 
 import { Canvas, useLoader } from "@react-three/fiber";
 import { Physics, RigidBody } from "@react-three/rapier";
@@ -386,8 +386,8 @@ function tileRequest(oldTile) {
       </>
     )
   }
-
-
+  const [dpr, setDpr] = useState(1.5)
+console.log(renderTileArr,'the array of things');
   if(me){
   return (
     <>
@@ -395,7 +395,8 @@ function tileRequest(oldTile) {
 
       <div className={styles.gameBoard}>
         <Suspense fallback={<SpinnerLoader />}>
-          <Canvas shadows camera={{ fov: 70, position: [0, 8, 14] }}>
+          <Canvas shadows camera={{ fov: 70, position: [0, 8, 14] }} dpr={dpr}>
+          <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} >
             <Physics>
               <ambientLight intensity={2} />
               <Sky distance={1000} sunPosition={[5, 5, 5]} />
@@ -462,6 +463,15 @@ function tileRequest(oldTile) {
               ) : null}
               {/* {otherPlayerTile ?  renderEnemyTile :null} */}
               <group>{renderTileArr}</group>
+              {/* <Merged meshes={renderTileArr.filter(tile => tile)}>
+  {(TileComponent) => (
+    <>
+      {renderTileArr.map((tile, index) => (
+        <TileComponent key={index} />
+      ))}
+    </>
+  )}
+</Merged> */}
 
               {citizenArray}
               <RigidBody type="fixed">
@@ -485,7 +495,7 @@ function tileRequest(oldTile) {
               <mesh position={newTilePosition}>
                 <boxGeometry args={[2, 10, 2]} />
                 <meshBasicMaterial
-                  color={beamColour}
+                  color={beamColour || player.state.profile.color}
                   transparent
                   opacity={0.4}
                 />
@@ -524,6 +534,7 @@ function tileRequest(oldTile) {
             {/* <Perf position="top-left" /> */}
             {/* <axesHelper args={[5]} />
           <gridHelper args={[50, 25, "black", "red"]} /> */}
+          </PerformanceMonitor>
           </Canvas>
         </Suspense>
       </div>

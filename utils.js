@@ -65,20 +65,38 @@ export const tileChecks = (
   setNewTile2DPosition([i + 5, j + 5]);
 };
 
-export const tileColourLogic = (i, j, boardGameMatrix, isCitizenPhase) => {
+export const tileColourLogic = (i, j, boardGameMatrix, isCitizenPhase, checks) => {
   const{allowedTiles,setAllowedTiles}=useContext(TileContext)
   const { setNewTileData, newTileData } = useContext(TileDataContext);
+
   // console.log( { ...newTileData,grid_id:{row:i+5,column:j+5} , orientation: 0 });
   if (i === -5 || j === -5) {
     if (
       boardGameMatrix[i + 5][j + 5]?.length === 0 &&
       (boardGameMatrix[i + 6][j + 5]?.length > 0 ||
         boardGameMatrix[i + 5][j + 6]?.length > 0 ||
-        boardGameMatrix[i + 5][j + 4]?.length > 0) 
+        boardGameMatrix[i + 5][j + 4]?.length > 0) && checks
     ) {
-     
+      if (isCitizenPhase === 'Place Citizen') {
+        return 0xc3c3c3;}
+        else{
       return 0x32cd32;
-    } else {
+        }
+    } 
+    else if (boardGameMatrix[i + 5][j + 5]?.length === 0 &&
+      (boardGameMatrix[i + 6][j + 5]?.length > 0 ||
+        boardGameMatrix[i + 5][j + 6]?.length > 0 ||
+        boardGameMatrix[i + 5][j + 4]?.length > 0)){
+         
+          if (isCitizenPhase === 'Place Citizen') {
+            return 0xc3c3c3;
+          }
+          else{
+          return 0xFF0000
+          }
+
+    }
+    else {
       return 0xc3c3c3;
     }
   } else if (
@@ -86,17 +104,28 @@ export const tileColourLogic = (i, j, boardGameMatrix, isCitizenPhase) => {
     (boardGameMatrix[i + 4][j + 5]?.length > 0 ||
       boardGameMatrix[i + 5][j + 4]?.length > 0 ||
       boardGameMatrix[i + 6][j + 5]?.length > 0 ||
-      boardGameMatrix[i + 5][j + 6]?.length > 0)
+      boardGameMatrix[i + 5][j + 6]?.length > 0) && checks
   ) {
     
-    if (isCitizenPhase === true) {
+    if (isCitizenPhase === 'Place Citizen') {
       return 0xc3c3c3;}
     else {
       
       
       return 0x32cd32}
-  } else {
-    if (isCitizenPhase === false) return 0xc3c3c3;
-    else return 0xc3c3c3;
+  } 
+  else if (boardGameMatrix[i + 5][j + 5]?.length === 0 &&
+    (boardGameMatrix[i + 4][j + 5]?.length > 0 ||
+      boardGameMatrix[i + 5][j + 4]?.length > 0 ||
+      boardGameMatrix[i + 6][j + 5]?.length > 0 ||
+      boardGameMatrix[i + 5][j + 6]?.length > 0)){
+        if (isCitizenPhase === 'Place Citizen') {
+          return 0xc3c3c3;}
+        return 0xFF0000
+      }
+
+  else {
+   return 0xc3c3c3;
+  
   }
 };

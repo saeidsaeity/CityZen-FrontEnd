@@ -10,6 +10,7 @@ return (
         <div className={styles.centered} >
             <div className={styles.modal}>
                 <div className={styles.modalContent}> 
+                <h1>Settings</h1>
     <label>
           Volume:
           <input 
