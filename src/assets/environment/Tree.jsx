@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 
 export  default function Tree(props) {
-  const { nodes, materials } = useGLTF('/oak_trees.glb')
+  const { nodes, materials } = useGLTF('/oak_trees.glb', "draco/gltf/")
   return (
     <group {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]} scale={0.003}>
@@ -1599,6 +1599,6 @@ export  default function Tree(props) {
   )
 }
 
-useGLTF.preload('/oak_trees.glb')
+useGLTF.preload('/oak_trees.glb',"draco/gltf/")
 
 

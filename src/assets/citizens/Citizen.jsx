@@ -13,7 +13,7 @@ function hexToHexadecimalNumber(hexString) {
 
 
 export function Citizen(props) {
-  const { nodes, materials } = useGLTF('/citizenBlue.glb')
+  const { nodes, materials } = useGLTF('/citizenBlue.glb',"draco/gltf/")
   const material = new THREE.MeshStandardMaterial({
     color: props.color, 
     transparent: false, opacity: 0.5
@@ -33,4 +33,4 @@ export function Citizen(props) {
   )
 }
 
-useGLTF.preload('/citizenBlue.glb')
+useGLTF.preload('/citizenBlue.glb',"draco/gltf/")

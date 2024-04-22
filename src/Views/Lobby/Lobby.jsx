@@ -7,7 +7,9 @@ function Lobby(){
     const navigate = useNavigate()
 
     useEffect(()=>{
-        insertCoin({ matchmaking: true}).then(()=>{
+        insertCoin({ matchmaking: true,
+        discord:true,gameId: "PZxGB0xEUmXMvazEvEmC"
+    }).then(()=>{
             navigate('/gameboard')
         })
     },[])

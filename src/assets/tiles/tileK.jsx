@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 
 const TileK = React.forwardRef((props, ref) => {
-  const { nodes, materials } = useGLTF('/tileK.glb')
+  const { nodes, materials } = useGLTF('/tileK.glb', "draco/gltf/")
   return (
     <group {...props} dispose={null}>
       <group position={[0, 0.35, 0]} rotation={[Math.PI, 0, Math.PI]} scale={[1, 0.1, 1]}>
@@ -557,7 +557,7 @@ const TileK = React.forwardRef((props, ref) => {
   )
 })
 
-useGLTF.preload('/tileK.glb')
+useGLTF.preload('/tileK.glb',"draco/gltf/")
 
 
 export default TileK

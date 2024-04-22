@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 
 export function CitizenRed(props) {
-  const { nodes, materials } = useGLTF('/citizenRed.glb')
+  const { nodes, materials } = useGLTF('/citizenRed.glb', "draco/gltf/")
   return (
     <group {...props} dispose={null}>
       <mesh
@@ -18,4 +18,4 @@ export function CitizenRed(props) {
   )
 }
 
-useGLTF.preload('/citizenRed.glb')
+useGLTF.preload('/citizenRed.glb',"draco/gltf/")

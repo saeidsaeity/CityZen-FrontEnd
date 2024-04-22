@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 
 export default function Mountain(props) {
-  const { nodes, materials } = useGLTF('/mountain_low_poly_for_distant_mountains.glb')
+  const { nodes, materials } = useGLTF('/mountain_low_poly_for_distant_mountains.glb', "draco/gltf/")
   return (
     <group {...props} dispose={null}>
       <mesh
@@ -16,4 +16,4 @@ export default function Mountain(props) {
   )
 }
 
-useGLTF.preload('/mountain_low_poly_for_distant_mountains.glb')
+useGLTF.preload('/mountain_low_poly_for_distant_mountains.glb',"draco/gltf/")

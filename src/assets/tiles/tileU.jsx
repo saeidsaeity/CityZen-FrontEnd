@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 
 const TileU = React.forwardRef((props, ref) => {
-    const { nodes, materials } = useGLTF('/tileU.glb')
+    const { nodes, materials } = useGLTF('/tileU.glb', "draco/gltf/")
   return (
     <group {...props} dispose={null}>
       <group position={[0, 0.35, 0]} scale={[1, 0.1, 1]}>
@@ -247,6 +247,6 @@ const TileU = React.forwardRef((props, ref) => {
   )
 })
 
-useGLTF.preload('/tileU.glb')
+useGLTF.preload('/tileU.glb',"draco/gltf/")
 
 export default TileU
