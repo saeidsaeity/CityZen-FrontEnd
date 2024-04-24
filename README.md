@@ -1,7 +1,7 @@
 # Board Game Web Application
 
 ---
-
+Test Yourself at https://cityzengame.netlify.app/
 ## Project Description
 Our team has developed an immersive board game web application within a tight timeframe of three weeks, leveraging cutting-edge technologies including React Three Fiber, MongoDB, and JavaScript. Our creation offers an engaging gaming experience, drawing inspiration from classic board games while incorporating modern design and technology.
 
